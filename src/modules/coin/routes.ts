@@ -10,8 +10,9 @@ class CoinRouter {
     }
 
     private addRoutes() {
-        this.router.get('/coins_of_collector', CoinControllers.getCoins)
-        this.router.get('/add_delete', CoinControllers.addDeleteCoin)
+        this.router.get('/programs', CoinControllers.getPrograms);
+        this.router.get('/coins_of_collector', CoinControllers.getCoinsOfCollector);
+        this.router.put('/add_delete', CoinControllers.addDeleteCoinOfCollection);
     }
 
 }

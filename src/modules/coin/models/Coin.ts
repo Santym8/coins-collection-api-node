@@ -1,8 +1,7 @@
 import { model, Schema } from 'mongoose';
 
-
 const coinSchema = new Schema({
-    collection: { type: String, ref: 'collection' },
+    program: { type: Schema.Types.ObjectId, ref: 'Program' },
     coinNumber: { type: Number, required: true },
     name: { type: String, required: true },
     year: { type: Number, required: true },

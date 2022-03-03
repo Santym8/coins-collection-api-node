@@ -1,10 +1,9 @@
 
 import express from 'express';
-import mongoose from 'mongoose';
+import * as dotenv from 'dotenv';
 import { DataBase } from './dataBase';
 import { Middlewares } from './middleware';
 import { Routes } from './routes';
-
 
 class Server {
     public app: express.Application;
@@ -17,11 +16,11 @@ class Server {
     //------------------------Config--------------------
 
     private config() {
-        this.app.set('port', process.env.PORT || 3000);
+        dotenv.config();
+        this.app.set('port', process.env.PORT);
         Middlewares.addMiddlewares(this.app);
         DataBase.configDataBase();
         Routes.addRoutes(this.app);
-
     }
 
     //-------------Start----------------
