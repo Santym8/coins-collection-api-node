@@ -4,7 +4,7 @@ import ProgramModel from './models/Program';
 import UserModel from '../user/models/User';
 
 export class CoinControllers {
-    
+
     public static async getCoinsOfCollector(req: Request, res: Response) {
         const { idCollector, idCollection } = req.query;
         const collector = await UserModel.findById(idCollector);
@@ -16,6 +16,7 @@ export class CoinControllers {
                 if (coin.program == idCollection) {
                     let coinSend = {
                         _id: coin.id,
+                        coinNumber: coin.coinNumber,
                         program: coin.program,
                         name: coin.name,
                         year: coin.year,
@@ -38,6 +39,7 @@ export class CoinControllers {
     public static async addDeleteCoinOfCollection(req: Request, res: Response) {
         const { idCollector, idCoin } = req.body;
         const collector = await UserModel.findById(idCollector);
+        
         if (collector) {
             let coins: string[] = collector.coins;
             let indexOfCoin = coins.indexOf(idCoin);
