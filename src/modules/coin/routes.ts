@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { CoinControllers } from './controllers'
+import { verifyToken } from './middlewares';
 class CoinRouter {
 
     public router: Router;
@@ -10,9 +11,9 @@ class CoinRouter {
     }
 
     private addRoutes() {
-        this.router.get('/programs', CoinControllers.getPrograms);
-        this.router.get('/coins_of_collector', CoinControllers.getCoinsOfCollector);
-        this.router.put('/add_delete', CoinControllers.addDeleteCoinOfCollection);
+        this.router.get('/programs', verifyToken, CoinControllers.getPrograms);
+        this.router.get('/coins_of_collector', verifyToken, CoinControllers.getCoinsOfCollector);
+        this.router.put('/add_delete', verifyToken, CoinControllers.addDeleteCoinOfCollection);
     }
 
 }

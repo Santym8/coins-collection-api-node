@@ -5,9 +5,9 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 
-export class Middlewares{
+export class Middlewares {
 
-    public static addMiddlewares(app:express.Application) {
+    public static addMiddlewares(app: express.Application) {
         app.use(morgan('dev'));
         app.use(helmet());
         app.use(express.json());

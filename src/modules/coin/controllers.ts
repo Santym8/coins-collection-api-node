@@ -2,11 +2,22 @@ import { Request, Response } from 'express';
 import CoinModel from './models/Coin';
 import ProgramModel from './models/Program';
 import UserModel from '../user/models/User';
+import jwt from 'jsonwebtoken';
 
 export class CoinControllers {
 
+    private static getId(req: Request) {
+        const token = req.headers['x-access-token']?.toString();
+        if(token){
+            return jwt.verify(token, 'collector-api');
+        }
+       return null
+    }
+
     public static async getCoinsOfCollector(req: Request, res: Response) {
-        const { idCollector, idCollection } = req.query;
+        const {idCollection } = req.query;
+        const idCollector = CoinControllers.getId(req);
+
         const collector = await UserModel.findById(idCollector);
         const coins = await CoinModel.find();
 
@@ -32,14 +43,14 @@ export class CoinControllers {
             }
             return res.json(coinsSend);
         }
-
         return res.json({ message: 'Error' })
     }
 
     public static async addDeleteCoinOfCollection(req: Request, res: Response) {
-        const { idCollector, idCoin } = req.body;
+        const { idCoin } = req.body;
+        const idCollector =  CoinControllers.getId(req);
         const collector = await UserModel.findById(idCollector);
-        
+
         if (collector) {
             let coins: string[] = collector.coins;
             let indexOfCoin = coins.indexOf(idCoin);
