@@ -8,19 +8,18 @@ export class CoinControllers {
 
     private static getId(req: Request) {
         const token = req.headers['x-access-token']?.toString();
-        if(token){
+        if (token) {
             return jwt.verify(token, 'collector-api');
         }
-       return null
+        return null
     }
 
     public static async getCoinsOfCollector(req: Request, res: Response) {
-        const {idCollection } = req.query;
+        const { idCollection } = req.query;
         const idCollector = CoinControllers.getId(req);
 
         const collector = await UserModel.findById(idCollector);
-        const coins = await CoinModel.find();
-
+        const coins = await CoinModel.find().sort('coinNumber');
         if (collector && coins.length != 0) {
             let coinsSend = [];
             for (let coin of coins) {
@@ -48,7 +47,7 @@ export class CoinControllers {
 
     public static async addDeleteCoinOfCollection(req: Request, res: Response) {
         const { idCoin } = req.body;
-        const idCollector =  CoinControllers.getId(req);
+        const idCollector = CoinControllers.getId(req);
         const collector = await UserModel.findById(idCollector);
 
         if (collector) {

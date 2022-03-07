@@ -31,7 +31,7 @@ class CoinControllers {
             const { idCollection } = req.query;
             const idCollector = CoinControllers.getId(req);
             const collector = yield User_1.default.findById(idCollector);
-            const coins = yield Coin_1.default.find();
+            const coins = yield Coin_1.default.find().sort('coinNumber');
             if (collector && coins.length != 0) {
                 let coinsSend = [];
                 for (let coin of coins) {
