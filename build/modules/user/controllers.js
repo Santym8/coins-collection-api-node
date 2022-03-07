@@ -16,6 +16,7 @@ exports.UserController = void 0;
 const User_1 = __importDefault(require("./models/User"));
 const express_validator_1 = require("express-validator");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 class UserController {
     static createUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -38,12 +39,16 @@ class UserController {
     static getUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             const { username, password } = req.query;
-            const user = yield User_1.default.findOne({ username: username, password: password });
+            const user = yield User_1.default.findOne({ username: username });
             if (user) {
-                const token = jsonwebtoken_1.default.sign({ _id: user.id }, 'collector-api', { expiresIn: 3600 });
-                return res.json({ token });
+                const matchPassword = yield bcryptjs_1.default.compare(password, user.password);
+                if (matchPassword) {
+                    const token = jsonwebtoken_1.default.sign({ _id: user.id }, 'collector-api', { expiresIn: 3600 });
+                    return res.json({ token });
+                }
+                return res.json({ message: 'icorrect password' });
             }
-            return res.json({ message: 'Error' });
+            return res.json({ message: 'The user dose not exist' });
         });
     }
 }

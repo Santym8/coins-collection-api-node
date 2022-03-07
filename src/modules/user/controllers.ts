@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import UserModel from './models/User';
 import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
-
+import bcrypt from 'bcryptjs';
 
 export class UserController {
 
@@ -26,13 +26,17 @@ export class UserController {
 
     public static async getUser(req: Request, res: Response) {
         const { username, password } = req.query;
-        const user = await UserModel.findOne({ username: username, password: password });
+        const user = await UserModel.findOne({ username: username });
         if (user) {
-            const token = jwt.sign({ _id: user.id }, 'collector-api', { expiresIn: 3600 })
-            return res.json({ token})
+            const matchPassword = await bcrypt.compare(password as string, user.password);
+            if (matchPassword) {
+                const token = jwt.sign({ _id: user.id }, 'collector-api', { expiresIn: 3600 });
+                return res.json({ token });
+            }
+            return res.json({ message: 'icorrect password' });
         }
-        return res.json({message:'Error'});
+        return res.json({ message: 'The user dose not exist' });
     }
 
-    
+
 }

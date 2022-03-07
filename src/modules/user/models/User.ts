@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import bcrypt from 'bcryptjs';
 
 const userSchema = new Schema({
     username: { type: String, required: true, unique: true },
@@ -6,8 +7,27 @@ const userSchema = new Schema({
     email: { type: String, required: true, unique: true },
     coins: [{
         type: Schema.Types.ObjectId,
-        ref:'Coin'
+        ref: 'Coin'
     }]
 })
+
+userSchema.pre('save', async function (next) {
+    const user = this;
+
+    //If the password is not being changed, it should not be re-encrypted
+    if (!user.isModified('password')) return next();
+
+    //If the password is being changed, it should be re-encrypted
+    try {
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(user.password, salt);
+        user.password = hash;
+    } catch (error) {
+        console.log(error);
+    }
+    return next();
+});
+
+
 
 export default model('User', userSchema);
