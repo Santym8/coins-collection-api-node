@@ -4,7 +4,7 @@ import {Container} from 'typedi';
 
 import express from 'express';
 import * as dotenv from 'dotenv';
-import { DataBase } from './config/conf.db.mongo';
+import { DataBase } from './config/db.mongo';
 import { Middlewares } from './Middleware';
 
 //------------Controllers--------
