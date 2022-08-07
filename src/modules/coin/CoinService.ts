@@ -1,12 +1,23 @@
+import { Service } from 'typedi';
 import { Request, Response } from 'express';
-import CoinModel from './models/Coin';
-import ProgramModel from './models/Program';
-import UserModel from '../user/models/User';
 import jwt from 'jsonwebtoken';
+import { CoinRepository } from './repository/CoinRepository';
+import { ProgramRepository } from './repository/ProgramRepository';
+import { UserRepository } from '../user/models/repository/UserRepository';
 
-export class CoinControllers {
 
-    private static getId(req: Request) {
+@Service()
+export class CoinService {
+
+    constructor(
+        private readonly coinRepository:CoinRepository,
+        private readonly programRepository:ProgramRepository ,
+        private readonly userRepository:UserRepository
+        ){}
+
+
+
+    private  static getId(req: Request) {
         const token = req.headers['x-access-token']?.toString();
         if (token) {
             return jwt.verify(token, 'collector-api');
@@ -14,12 +25,12 @@ export class CoinControllers {
         return null
     }
 
-    public static async getCoinsOfCollector(req: Request, res: Response) {
+    public  async getCoinsOfCollector(req: Request, res: Response) {
         const { idCollection } = req.query;
-        const idCollector = CoinControllers.getId(req);
+        const idCollector = CoinService.getId(req);
 
-        const collector = await UserModel.findById(idCollector);
-        const coins = await CoinModel.find().sort('coinNumber');
+        const collector = await this.userRepository.getUserById(idCollector as string);
+        const coins = await this.coinRepository.getAllCoins();
         if (collector && coins.length != 0) {
             let coinsSend = [];
             for (let coin of coins) {
@@ -45,10 +56,10 @@ export class CoinControllers {
         return res.json({ message: 'Error' })
     }
 
-    public static async addDeleteCoinOfCollection(req: Request, res: Response) {
+    public  async addDeleteCoinOfCollection(req: Request, res: Response) {
         const { idCoin } = req.body;
-        const idCollector = CoinControllers.getId(req);
-        const collector = await UserModel.findById(idCollector);
+        const idCollector = CoinService.getId(req);
+        const collector = await this.userRepository.getUserById(idCollector as string);
 
         if (collector) {
             let coins: string[] = collector.coins;
@@ -65,8 +76,8 @@ export class CoinControllers {
 
     }
 
-    public static async getPrograms(req: Request, res: Response) {
-        const programs = await ProgramModel.find();
+    public  async getPrograms(req: Request, res: Response) {
+        const programs = this.programRepository.getAllPrograms();
         res.json(programs);
     }
 

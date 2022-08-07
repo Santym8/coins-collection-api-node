@@ -1,28 +1,26 @@
+import { Service } from 'typedi';
 import { Router } from "express";
-import { UserController } from './controllers';
+import { UserService } from './UserSevice';
 import { body } from 'express-validator';
-class UserRouter {
+
+@Service()
+export class UserController {
     public router: Router;
 
-    constructor() {
+    constructor(private readonly userService:UserService) {
         this.router = Router();
         this.addRoutes();
     }
 
     private addRoutes() {
-        this.router.get('/', UserController.getUser);
+        this.router.get('/', this.userService.getUser);
         this.router.post('/create',
             body('username').isLength({ min: 5, max: 15 }),
             body('password').isLength({ min: 5, max: 15 }),
             body('email').isEmail(),
-            UserController.createUser
+            this.userService.createUser
         );
     }
 
 
 }
-
-
-const userRoutes = new UserRouter();
-
-export default userRoutes.router;

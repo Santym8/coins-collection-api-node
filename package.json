@@ -4,9 +4,9 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "node build/server.js",
+        "start": "node build/index.js",
         "ts": "tsc -w",
-        "dev": "nodemon ./build/server"
+        "dev": "nodemon ./build/index"
     },
     "keywords": [],
     "author": "",
@@ -22,6 +22,8 @@
         "jsonwebtoken": "^8.5.1",
         "mongoose": "^6.2.3",
         "morgan": "^1.10.0",
+        "reflect-metadata": "^0.1.13",
+        "typedi": "^0.10.0",
         "typescipt": "^1.0.0"
     },
     "devDependencies": {
