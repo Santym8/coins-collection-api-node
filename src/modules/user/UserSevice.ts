@@ -5,7 +5,6 @@ import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-
 @Service()
 export class UserService {
 
@@ -29,7 +28,7 @@ export class UserService {
     }
 
     public async getUser(req: Request, res: Response) {
-
+        let userRepository = this.userRepository;
         try {
             const { username, password } = req.query;
 
@@ -37,7 +36,7 @@ export class UserService {
                 return res.json({ message: 'Empty fields' });
             }
 
-            const user = await this.userRepository.getUserByUsername(username as string);
+            const user = await userRepository.getUserByUsername(username as string);
             if (!user) {
                 return res.json({ message: 'The user dose not exist' });
             }
