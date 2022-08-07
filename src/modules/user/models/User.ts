@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import bcrypt from 'bcryptjs';
 import { IUser } from "./interfaces/IUser";
 
-const userSchema = new Schema({
+const userSchema = new Schema<IUser>({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -31,4 +31,4 @@ userSchema.pre('save', async function (next) {
 
 
 
-export default model('User', userSchema);
+export default model<IUser>('User', userSchema);
