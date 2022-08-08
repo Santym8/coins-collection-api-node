@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { Router, Request, Response } from "express";
 import { CoinService } from './CoinService';
-import { Middlewares } from './Middlewares';
+import { UserMiddlewares } from '../user/UserMiddlewares';
 import { IController } from '../../utils/interfaces/IController';
 
 @Service()
@@ -15,9 +15,9 @@ export class CoinController implements IController {
     }
 
     private addRoutes() {
-        this.router.get('/programs', Middlewares.verifyToken, (req: Request, res: Response) => this.coinService.getPrograms(req, res));
-        this.router.get('/coins_of_collector', Middlewares.verifyToken, (req: Request, res: Response) => this.coinService.getCoinsOfCollector(req, res));
-        this.router.put('/add_delete', Middlewares.verifyToken, (req: Request, res: Response) => this.coinService.addDeleteCoinOfCollection(req, res));
+        this.router.get('/programs', UserMiddlewares.verifyToken, (req: Request, res: Response) => this.coinService.getPrograms(req, res));
+        this.router.get('/coins_of_collector', UserMiddlewares.verifyToken, (req: Request, res: Response) => this.coinService.getCoinsOfCollector(req, res));
+        this.router.put('/add_delete', UserMiddlewares.verifyToken, (req: Request, res: Response) => this.coinService.addDeleteCoinOfCollection(req, res));
     }
 
     public getRouter(): Router {

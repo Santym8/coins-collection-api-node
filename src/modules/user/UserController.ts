@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { Router, Request, Response } from "express";
 import { UserService } from './UserSevice';
-import { Middlewares } from './Middlewares';
+import { UserMiddlewares } from './UserMiddlewares';
 import { IController } from '../../utils/interfaces/IController';
 
 @Service()
@@ -18,7 +18,7 @@ export class UserController implements IController {
             (req: Request, res: Response) => this.userService.getUser(req, res));
 
         this.router.post('/create',
-            Middlewares.createUserMiddleware,
+            UserMiddlewares.createUserMiddleware,
             (req: Request, res: Response) => this.userService.createUser(req, res));
     }
 
