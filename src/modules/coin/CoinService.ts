@@ -1,33 +1,24 @@
 import { Service } from 'typedi';
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import { CoinRepository } from './models/repository/CoinRepository';
 import { ProgramRepository } from './models/repository/ProgramRepository';
 import { UserRepository } from '../user/models/repository/UserRepository';
+import { IRequestWithUserId } from '../user/utils/IRequestWithUserId';
 
 
 @Service()
 export class CoinService {
 
     constructor(
-        private readonly coinRepository:CoinRepository,
-        private readonly programRepository:ProgramRepository ,
-        private readonly userRepository:UserRepository
-        ){}
+        private readonly coinRepository: CoinRepository,
+        private readonly programRepository: ProgramRepository,
+        private readonly userRepository: UserRepository
+    ) { }
 
 
-
-    private static getId(req: Request) {
-        const token = req.headers['x-access-token']?.toString();
-        if (token) {
-            return jwt.verify(token, 'collector-api');
-        }
-        return null
-    }
-
-    public async getCoinsOfCollector(req: Request, res: Response) {
+    public async getCoinsOfCollector(req: IRequestWithUserId, res: Response) {
         const { idCollection } = req.query;
-        const idCollector = CoinService.getId(req);
+        const idCollector = req.userId;
 
         const collector = await this.userRepository.getUserById(idCollector as string);
         const coins = await this.coinRepository.getAllCoins();
@@ -56,12 +47,12 @@ export class CoinService {
         return res.json({ message: 'Error' })
     }
 
-    public async addDeleteCoinOfCollection(req: Request, res: Response) {
+    public async addDeleteCoinOfCollection(req: IRequestWithUserId, res: Response) {
         const { idCoin } = req.body;
-        const idCollector = CoinService.getId(req);
+        const idCollector = req.userId;
         const collector = await this.userRepository.getUserById(idCollector as string);
         if (collector) {
-            let coins: string[] = collector.coins as unknown as  string[];
+            let coins: string[] = collector.coins as unknown as string[];
             let indexOfCoin = coins.indexOf(idCoin);
             if (indexOfCoin == -1) {
                 coins.push(idCoin);
@@ -75,7 +66,7 @@ export class CoinService {
 
     }
 
-    public  async getPrograms(req: Request, res: Response) {
+    public async getPrograms(req: Request, res: Response) {
         const programs = this.programRepository.getAllPrograms();
         res.json(programs);
     }
