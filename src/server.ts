@@ -1,15 +1,23 @@
-
+//-------Dependency Injection-----
 import 'reflect-metadata';
-import {Container} from 'typedi';
+import { Container } from 'typedi';
 
+//----------Configurations----------
 import express from 'express';
 import * as dotenv from 'dotenv';
 import { DataBase } from './config/db.mongo';
-import { Middlewares } from './Middleware';
+
+//------------Midlewares-----------
+import compression from 'compression';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
 
 //------------Controllers--------
 import { CoinController } from './modules/coin/CoinController';
 import { UserController } from './modules/user/UserController';
+
+
 
 export class Server {
     public app: express.Application;
@@ -20,18 +28,25 @@ export class Server {
     }
 
     //------------------------Config--------------------
-
-    
-    private addRouters(){
+    private addRouters() {
         this.app.use('/api/user', Container.get(UserController).router);
         this.app.use('/api/coin', Container.get(CoinController).router)
     }
 
-    private config() {   
-        dotenv.config(); 
+    private addMiddlewares() {
+        this.app.use(morgan('dev'));
+        this.app.use(helmet());
+        this.app.use(express.json());
+        this.app.use(compression());
+        this.app.use(cors());
+
+    }
+
+    private config() {
+        dotenv.config();
         this.app.set('port', process.env.PORT || 3000);
-        Middlewares.addMiddlewares(this.app);
         DataBase.configDataBase();
+        this.addMiddlewares();
         this.addRouters()
     }
 
