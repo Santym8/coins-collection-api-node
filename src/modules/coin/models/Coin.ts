@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose';
+import { ICoin } from './interfaces/ICoin';
 
-const coinSchema = new Schema({
+const coinSchema = new Schema<ICoin>({
     program: { type: Schema.Types.ObjectId, ref: 'Program' },
     coinNumber: { type: Number, required: true },
     name: { type: String, required: true },
@@ -10,4 +11,4 @@ const coinSchema = new Schema({
     status: { type: Boolean, default: true }
 })
 
-export default model('Coin', coinSchema);
+export default model<ICoin>('Coin', coinSchema);

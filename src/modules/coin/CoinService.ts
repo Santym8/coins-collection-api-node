@@ -1,8 +1,8 @@
 import { Service } from 'typedi';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { CoinRepository } from './repository/CoinRepository';
-import { ProgramRepository } from './repository/ProgramRepository';
+import { CoinRepository } from './models/repository/CoinRepository';
+import { ProgramRepository } from './models/repository/ProgramRepository';
 import { UserRepository } from '../user/models/repository/UserRepository';
 
 
@@ -17,7 +17,7 @@ export class CoinService {
 
 
 
-    private  static getId(req: Request) {
+    private static getId(req: Request) {
         const token = req.headers['x-access-token']?.toString();
         if (token) {
             return jwt.verify(token, 'collector-api');
@@ -25,7 +25,7 @@ export class CoinService {
         return null
     }
 
-    public  async getCoinsOfCollector(req: Request, res: Response) {
+    public async getCoinsOfCollector(req: Request, res: Response) {
         const { idCollection } = req.query;
         const idCollector = CoinService.getId(req);
 
@@ -34,7 +34,7 @@ export class CoinService {
         if (collector && coins.length != 0) {
             let coinsSend = [];
             for (let coin of coins) {
-                if (coin.program == idCollection) {
+                if (coin.program.toString() == idCollection) {
                     let coinSend = {
                         _id: coin.id,
                         coinNumber: coin.coinNumber,
@@ -56,13 +56,12 @@ export class CoinService {
         return res.json({ message: 'Error' })
     }
 
-    public  async addDeleteCoinOfCollection(req: Request, res: Response) {
+    public async addDeleteCoinOfCollection(req: Request, res: Response) {
         const { idCoin } = req.body;
         const idCollector = CoinService.getId(req);
         const collector = await this.userRepository.getUserById(idCollector as string);
-
         if (collector) {
-            let coins: string[] = collector.coins;
+            let coins: string[] = collector.coins as unknown as  string[];
             let indexOfCoin = coins.indexOf(idCoin);
             if (indexOfCoin == -1) {
                 coins.push(idCoin);
