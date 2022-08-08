@@ -1,16 +1,22 @@
-import express from 'express';
+import { Service } from 'typedi';
+import { verify } from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
-import jwt from 'jsonwebtoken';
-import UserModel from './models/User';
+import { UserRepository } from './models/repository/UserRepository';
+
+
+
+@Service()
 export class UserMiddlewares {
 
-    public static verifyToken = (req: express.Request, res: express.Response, next: any) => {
+    constructor(private readonly userRepository: UserRepository) { }
+
+    public verifyToken = (req: Request, res: Response, next: any) => {
         try {
-            const token = req.headers['x-access-token']?.toString();
+            const token: string = req.headers['x-access-token'] as string;
             if (!token) return res.json({ message: 'No token' });
-            const id = jwt.verify(token, 'collector-api');
-            const user = UserModel.findById(id);
+            const id: string = verify(token, 'collector-api') as string;
+            const user = this.userRepository.getUserById(id);
             if (!user) return res.json({ message: 'User dose not exist' });
             next();
         } catch (error) {
@@ -19,18 +25,18 @@ export class UserMiddlewares {
     }
 
     // Checks if there are any problem
-    private static grantAccess = (req: Request, res: Response, next: any) => {
+    private grantAccess = (req: Request, res: Response, next: any) => {
         const errors = validationResult(req);
         if (!errors.isEmpty())
             return res.status(422).json({ errors: errors.array() });
         next();
     }
 
-    public static createUserMiddleware = [
+    public createUserMiddleware = [
         body('username').isLength({ min: 5, max: 15 }),
         body('password').isLength({ min: 5, max: 15 }),
         body('email').isEmail(),
-        UserMiddlewares.grantAccess
+        this.grantAccess
     ];
 
 }

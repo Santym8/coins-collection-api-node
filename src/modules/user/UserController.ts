@@ -8,7 +8,10 @@ import { IController } from '../../utils/interfaces/IController';
 export class UserController implements IController {
     private router: Router;
 
-    constructor(private readonly userService: UserService) {
+    constructor(
+        private readonly userService: UserService,
+        private readonly userMiddlewares: UserMiddlewares
+    ) {
         this.router = Router();
         this.addRoutes();
     }
@@ -18,7 +21,7 @@ export class UserController implements IController {
             (req: Request, res: Response) => this.userService.getUser(req, res));
 
         this.router.post('/create',
-            UserMiddlewares.createUserMiddleware,
+            this.userMiddlewares.createUserMiddleware,
             (req: Request, res: Response) => this.userService.createUser(req, res));
     }
 
