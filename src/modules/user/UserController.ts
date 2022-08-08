@@ -2,10 +2,11 @@ import { Service } from 'typedi';
 import { Router, Request, Response } from "express";
 import { UserService } from './UserSevice';
 import { body } from 'express-validator';
+import { IController } from '../../utils/interfaces/IController';
 
 @Service()
-export class UserController {
-    public router: Router;
+export class UserController implements IController{
+    private router: Router;
 
     constructor(private readonly userService: UserService) {
         this.router = Router();
@@ -20,6 +21,11 @@ export class UserController {
             body('email').isEmail(),
             (req: Request, res: Response) => this.userService.createUser(req, res)
         );
+    }
+
+
+    public getRouter(){
+        return this.router;
     }
 
 

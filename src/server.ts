@@ -16,11 +16,21 @@ import morgan from 'morgan';
 //------------Controllers--------
 import { CoinController } from './modules/coin/CoinController';
 import { UserController } from './modules/user/UserController';
+import { IController } from './utils/interfaces/IController';
+import { IUrlController } from './utils/interfaces/IUrlController';
+
+
 
 
 
 export class Server {
-    public app: express.Application;
+
+    private app: express.Application;
+
+    private urlsControllers: IUrlController[] = [
+        { url: '/api/user', controller: Container.get<IController>(UserController) },
+        { url: '/api/coin', controller: Container.get<IController>(CoinController) },
+    ];
 
     constructor() {
         this.app = express();
@@ -29,8 +39,9 @@ export class Server {
 
     //------------------------Config--------------------
     private addRouters() {
-        this.app.use('/api/user', Container.get(UserController).router);
-        this.app.use('/api/coin', Container.get(CoinController).router)
+        this.urlsControllers.forEach(urlController => {
+            this.app.use(urlController.url, urlController.controller.getRouter())
+        });
     }
 
     private addMiddlewares() {
@@ -39,7 +50,6 @@ export class Server {
         this.app.use(express.json());
         this.app.use(compression());
         this.app.use(cors());
-
     }
 
     private config() {

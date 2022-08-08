@@ -2,11 +2,12 @@ import { Service } from 'typedi';
 import { Router, Request, Response } from "express";
 import { CoinService } from './CoinService'
 import { verifyToken } from './middlewares';
+import { IController } from '../../utils/interfaces/IController';
 
 @Service()
-export class CoinController {
+export class CoinController implements IController{
 
-    public router: Router;
+    private router: Router;
 
     constructor(private readonly coinService: CoinService) {
         this.router = Router();
@@ -18,6 +19,11 @@ export class CoinController {
         this.router.get('/coins_of_collector', verifyToken, (req: Request, res: Response) => this.coinService.getCoinsOfCollector(req, res));
         this.router.put('/add_delete', verifyToken, (req: Request, res: Response) => this.coinService.addDeleteCoinOfCollection(req, res));
     }
+
+    public getRouter(): Router {
+        return this.router;
+    }
+
 
 }
 
