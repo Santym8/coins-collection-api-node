@@ -19,9 +19,20 @@ export class CoinController implements IController {
     }
 
     private addRoutes() {
-        this.router.get('/programs', this.coinMiddlewares.grantAccess, (req: Request, res: Response) => this.coinService.getPrograms(req, res));
-        this.router.get('/coins_of_collector', this.coinMiddlewares.grantAccess, (req: Request, res: Response) => this.coinService.getCoinsOfCollector(req, res));
-        this.router.put('/add_delete', this.coinMiddlewares.grantAccess, (req: Request, res: Response) => this.coinService.addDeleteCoinOfCollection(req, res));
+        this.router.get(
+            '/programs',
+            this.coinMiddlewares.grantAccess,
+            (req: Request, res: Response) => this.coinService.getPrograms(req, res));
+
+        this.router.get(
+            '/coins_of_collector',
+            this.coinMiddlewares.grantAccess,
+            (req: Request, res: Response) => this.coinService.getCoinsOfCollector(req, res));
+
+        this.router.put(
+            '/add_delete',
+            this.coinMiddlewares.grantAccess,
+            (req: Request, res: Response) => this.coinService.addDeleteCoinOfCollection(req, res));
     }
 
     public getRouter(): Router {
