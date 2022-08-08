@@ -1,7 +1,6 @@
 import { Service } from 'typedi';
 import { UserRepository } from './models/repository/UserRepository';
 import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
@@ -11,10 +10,6 @@ export class UserService {
     constructor(private readonly userRepository: UserRepository) { }
 
     public async createUser(req: Request, res: Response) {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() })
-        }
         const newUser = this.userRepository.createUser(req);
         await newUser.save()
             .then(() => {
