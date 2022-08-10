@@ -1,27 +1,32 @@
 import { Service } from 'typedi';
-import { verify } from 'jsonwebtoken';
 import { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { UserRepository } from './models/repository/UserRepository';
 import { IRequestWithUserId } from './utils/IRequestWithUserId';
+import { Encryptor } from './utils/Encryptor';
 
 @Service()
 export class UserMiddlewares {
 
-    constructor(private readonly userRepository: UserRepository) { }
+    constructor(
+        private readonly userRepository: UserRepository,
+        private readonly encryptor: Encryptor
+    ) { }
 
-    public verifyToken = (req: IRequestWithUserId, res: Response, next: any) => {
+    public verifyToken = async (req: IRequestWithUserId, res: Response, next: any) => {
         try {
-            const token: string = req.headers['x-access-token'] as string;
+            const token = req.headers['x-access-token'];
             if (!token) return res.json({ message: 'No token' });
-            const id: string = verify(token, 'collector-api') as string;
-            const user = this.userRepository.getUserById(id);
-            if (!user) return res.json({ message: 'User dose not exist' });
+            const id: string = this.encryptor.verifyToken(token as string);
+            const user = await this.userRepository.getUserById(id);
+            if (!user) return res.json({ message: 'User does not exist' });
             req.userId = id;
             next();
         } catch (error) {
             return res.json({ message: 'Unuthorized' });
         }
+
+
     }
 
     // Checks if there are any problem
