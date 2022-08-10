@@ -9,7 +9,7 @@ import { Encryptor } from '../../../../src/modules/user/utils/Encryptor';
 import { IRequestWithUserId } from '../../../../src/modules/user/utils/IRequestWithUserId';
 
 
-describe('VerifyToken middleware', () => {
+describe('User-Middlewares-VerifyToken', () => {
 
     test('No access token', async () => {
         //Given
