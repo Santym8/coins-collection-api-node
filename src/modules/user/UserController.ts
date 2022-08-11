@@ -19,7 +19,7 @@ export class UserController implements IController {
     private addRoutes(): void {
         this.router.get(
             '/',
-            (req: Request, res: Response) => this.userService.getUser(req, res));
+            (req: Request, res: Response) => this.userService.login(req, res));
 
         this.router.post(
             '/create',

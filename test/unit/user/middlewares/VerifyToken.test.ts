@@ -5,7 +5,7 @@ import { mock, instance, when, anyString } from 'ts-mockito'
 //Dependency Injection
 import { UserRepository } from '../../../../src/modules/user/models/repository/UserRepository';
 import { UserMiddlewares } from '../../../../src/modules/user/UserMiddlewares';
-import { Encryptor } from '../../../../src/modules/user/utils/Encryptor';
+import { TokenManagement } from '../../../../src/modules/user/utils/TokenManagement';
 import { IRequestWithUserId } from '../../../../src/modules/user/utils/IRequestWithUserId';
 
 
@@ -14,10 +14,10 @@ describe('User-Middlewares-VerifyToken', () => {
     test('No access token', async () => {
         //Given
         let mockedUserRepository: UserRepository = mock(UserRepository);
-        let mockedEncryptor: Encryptor = mock(Encryptor);
+        let mockedTokenManagement: TokenManagement = mock(TokenManagement);
         let userMiddlewares: UserMiddlewares = new UserMiddlewares(
             instance(mockedUserRepository),
-            instance(mockedEncryptor)
+            instance(mockedTokenManagement)
         );
 
         //When: Request has no header x-access-token
@@ -35,7 +35,7 @@ describe('User-Middlewares-VerifyToken', () => {
     test('Empty access token', async () => {
         //Given
         let mockedUserRepository: UserRepository = mock(UserRepository);
-        let mockedEncryptor: Encryptor = mock(Encryptor);
+        let mockedEncryptor: TokenManagement = mock(TokenManagement);
         let userMiddlewares: UserMiddlewares = new UserMiddlewares(
             instance(mockedUserRepository),
             instance(mockedEncryptor)
@@ -57,7 +57,7 @@ describe('User-Middlewares-VerifyToken', () => {
 
     test('User does not exist', async () => {
         //Given
-        let mockedEncryptor: Encryptor = mock(Encryptor);
+        let mockedEncryptor: TokenManagement = mock(TokenManagement);
         when(mockedEncryptor.verifyToken(anyString())).thenReturn('valid_token');
 
         let mockedUserRepository: UserRepository = mock(UserRepository);
@@ -88,7 +88,7 @@ describe('User-Middlewares-VerifyToken', () => {
         let mockedUserRepository: UserRepository = mock(UserRepository);
         when(mockedUserRepository.getUserById(anyString())).thenResolve({} as any);
 
-        let mockedEncryptor: Encryptor = mock(Encryptor);
+        let mockedEncryptor: TokenManagement = mock(TokenManagement);
         when(mockedEncryptor.verifyToken(anyString())).thenReturn('valid id');
 
         let userMiddlewares: UserMiddlewares = new UserMiddlewares(
