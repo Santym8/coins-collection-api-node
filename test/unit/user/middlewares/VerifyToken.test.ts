@@ -25,10 +25,13 @@ describe('User-Middlewares-VerifyToken', () => {
         let response: Partial<Response> = {
             json: jest.fn()
         };
+        response['status'] = jest.fn().mockReturnValue(response);
+
         let nextFunction: NextFunction = jest.fn();
 
         //Then: Unuthorized
         await userMiddlewares.verifyToken(request as Request, response as Response, nextFunction);
+        expect(response.status).toBeCalledWith(401);
         expect(response.json).toBeCalledWith({ message: 'Unuthorized' });
     });
 
@@ -48,10 +51,13 @@ describe('User-Middlewares-VerifyToken', () => {
         let response: Partial<Response> = {
             json: jest.fn()
         };
+        response['status'] = jest.fn().mockReturnValue(response);
+
         let nextFunction: NextFunction = jest.fn();
 
         //Then: No token
         await userMiddlewares.verifyToken(request as Request, response as Response, nextFunction);
+        expect(response.status).toBeCalledWith(401);
         expect(response.json).toBeCalledWith({ message: 'No token' });
     });
 
@@ -75,10 +81,13 @@ describe('User-Middlewares-VerifyToken', () => {
         let response: Partial<Response> = {
             json: jest.fn()
         };
+        response['status'] = jest.fn().mockReturnValue(response);
+
         let nextFunction: NextFunction = jest.fn();
 
         //Then: No token
         await userMiddlewares.verifyToken(request as Request, response as Response, nextFunction as NextFunction);
+        expect(response.status).toBeCalledWith(401);
         expect(response.json).toBeCalledWith({ message: 'User does not exist' });
 
     });
@@ -103,6 +112,8 @@ describe('User-Middlewares-VerifyToken', () => {
         let response: Partial<Response> = {
             json: jest.fn()
         };
+        response['status'] = jest.fn().mockReturnValue(response);
+
         let nextFunction: NextFunction = jest.fn();
         //Then: User does not exist
         await userMiddlewares.verifyToken(request as IRequestWithUserId, response as Response, nextFunction);
