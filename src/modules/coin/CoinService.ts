@@ -16,35 +16,42 @@ export class CoinService {
     ) { }
 
 
-    public async getCoinsOfCollector(req: IRequestWithUserId, res: Response) {
+    public async getAllCoins(req: IRequestWithUserId, res: Response) {
         const { idCollection } = req.query;
         const idCollector = req.userId;
 
         const collector = await this.userRepository.getUserById(idCollector as string);
-        const coins = await this.coinRepository.getAllCoins();
-        if (collector && coins.length != 0) {
-            let coinsSend = [];
-            for (let coin of coins) {
-                if (coin.program.toString() == idCollection) {
-                    let coinSend = {
-                        _id: coin.id,
-                        coinNumber: coin.coinNumber,
-                        program: coin.program,
-                        name: coin.name,
-                        year: coin.year,
-                        image: coin.image,
-                        description: coin.description,
-                        found: false
-                    }
-                    if (collector.coins.indexOf(coin.id) != -1) {
-                        coinSend.found = true;
-                    }
-                    coinsSend.push(coinSend);
-                }
-            }
-            return res.json(coinsSend);
+
+        if (!collector) {
+            return res.status(400).json({ message: 'The User does not exist' })
         }
-        return res.json({ message: 'Error' })
+
+        const coins = await this.coinRepository.getAllCoinsOfProgram();
+        if (!coins || coins.length == 0) {
+            return res.status(400).json({ message: 'No coins' })
+        }
+
+        let coinsSend = [];
+        for (let coin of coins) {
+            if (coin.program.toString() == idCollection) {
+                let coinSend = {
+                    _id: coin.id,
+                    coinNumber: coin.coinNumber,
+                    program: coin.program,
+                    name: coin.name,
+                    year: coin.year,
+                    image: coin.image,
+                    description: coin.description,
+                    found: false
+                }
+                if (collector.coins.indexOf(coin.id) != -1) {
+                    coinSend.found = true;
+                }
+                coinsSend.push(coinSend);
+            }
+        }
+        return res.status(200).json(coinsSend);
+
     }
 
     public async addDeleteCoinOfCollection(req: IRequestWithUserId, res: Response) {

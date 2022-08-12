@@ -27,7 +27,7 @@ export class CoinController implements IController {
         this.router.get(
             '/coins_of_collector',
             this.coinMiddlewares.grantAccess,
-            (req: Request, res: Response) => this.coinService.getCoinsOfCollector(req, res));
+            (req: Request, res: Response) => this.coinService.getAllCoins(req, res));
 
         this.router.put(
             '/add_delete',
