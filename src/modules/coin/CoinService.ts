@@ -57,25 +57,36 @@ export class CoinService {
     public async addDeleteCoinOfCollection(req: IRequestWithUserId, res: Response) {
         const { idCoin } = req.body;
         const idCollector = req.userId;
-        const collector = await this.userRepository.getUserById(idCollector as string);
-        if (collector) {
-            let coins: string[] = collector.coins as unknown as string[];
-            let indexOfCoin = coins.indexOf(idCoin);
-            if (indexOfCoin == -1) {
-                coins.push(idCoin);
-            } else {
-                coins.splice(indexOfCoin, 1);
-            }
-            collector.save();
-            return res.json(collector);
-        }
-        return res.json({ 'message': 'Error' })
 
+        const collector = await this.userRepository.getUserById(idCollector as string);
+
+        if (!collector) {
+            return res.status(400).json({ 'message': 'The User does not exist' })
+        }
+
+        const coin = await this.coinRepository.getCoinById(idCoin);
+        if (!coin) {
+            return res.status(400).json({ 'message': 'The Coin does not exist' })
+        }
+
+        let action = "";
+        let coinsOfCollector: string[] = collector.coins as unknown as string[];
+        let indexOfCoin = coinsOfCollector.indexOf(idCoin);
+        if (indexOfCoin == -1) {
+            coinsOfCollector.push(idCoin);
+            action = 'Added';
+        } else {
+            coinsOfCollector.splice(indexOfCoin, 1);
+            action = 'Removed';
+        }
+
+        this.userRepository.saveUserUpdated(collector);
+        return res.status(200).json({ message: action });
     }
 
     public async getPrograms(req: Request, res: Response) {
         const programs = this.programRepository.getAllPrograms();
-        res.json(programs);
+        res.status(200).json(programs);
     }
 
 

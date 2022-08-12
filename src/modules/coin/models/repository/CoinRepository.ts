@@ -8,4 +8,8 @@ export class CoinRepository {
     public async getAllCoinsOfProgram() {
         return await CoinModel.find().sort('coinNumber');
     }
+
+    public async getCoinById(id: string) {
+        return await CoinModel.findById(id);
+    }
 }

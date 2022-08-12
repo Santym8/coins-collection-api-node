@@ -1,7 +1,8 @@
 import { Service } from "typedi";
-//----Models----------
 import UserModel from "../User";
 import { IUser } from "../interfaces/IUser";
+import { Document } from 'mongoose';
+
 
 @Service()
 export class UserRepository {
@@ -22,6 +23,10 @@ export class UserRepository {
 
     public async getUserById(id: string) {
         return await UserModel.findById(id);
+    }
+
+    public async saveUserUpdated(user: Document<unknown, any, IUser>) {
+        await user.save();
     }
 
 
