@@ -85,7 +85,7 @@ export class CoinService {
     }
 
     public async getPrograms(req: Request, res: Response) {
-        const programs = this.programRepository.getAllPrograms();
+        const programs = await this.programRepository.getAllPrograms();
         res.status(200).json(programs);
     }
 

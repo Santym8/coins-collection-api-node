@@ -25,6 +25,7 @@ const Program_1 = __importDefault(require("../Program"));
 let ProgramRepository = class ProgramRepository {
     getAllPrograms() {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log(yield Program_1.default.find());
             return yield Program_1.default.find();
         });
     }

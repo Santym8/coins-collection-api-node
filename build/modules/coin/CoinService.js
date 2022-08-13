@@ -92,7 +92,7 @@ let CoinService = class CoinService {
     }
     getPrograms(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const programs = this.programRepository.getAllPrograms();
+            const programs = yield this.programRepository.getAllPrograms();
             res.status(200).json(programs);
         });
     }

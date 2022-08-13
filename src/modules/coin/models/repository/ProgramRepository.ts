@@ -6,6 +6,7 @@ import ProgramModel from '../Program'
 export class ProgramRepository{
 
     public async getAllPrograms(){
+        console.log(await ProgramModel.find())
         return await ProgramModel.find();
     }
 }
