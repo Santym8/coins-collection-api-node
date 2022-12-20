@@ -39,6 +39,7 @@ export class Server {
 
     //------------------------Config--------------------
     private addRouters() {
+        this.app.use('/', () => console.log('WORKS!'));
         this.urlsControllers.forEach(urlController => {
             this.app.use(urlController.url, urlController.controller.getRouter())
         });
