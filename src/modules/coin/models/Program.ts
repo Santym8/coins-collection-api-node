@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { IProgram } from './interfaces/IProgram';
+import { IProgram } from '../interfaces/IProgram';
 
 const programSchema = new Schema<IProgram>({
     name: { type: String, required: true, unique: true },

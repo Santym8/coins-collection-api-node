@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { UserMiddlewares } from '../user/UserMiddlewares';
+import { UserMiddlewares } from '../../user/middleware/UserMiddlewares';
 
 
 @Service()

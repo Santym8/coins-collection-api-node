@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { ICoin } from './interfaces/ICoin';
+import { ICoin } from '../interfaces/ICoin';
 
 const coinSchema = new Schema<ICoin>({
     program: { type: Schema.Types.ObjectId, ref: 'Program' },

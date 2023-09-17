@@ -1,12 +1,12 @@
 import { mock, instance, when, anything, anyString } from 'ts-mockito'
 import { Response } from 'express';
-import { IRequestWithUserId } from '../../../../src/modules/user/utils/IRequestWithUserId';
+import { IRequestWithUserId } from '../../../../../src/modules/user/utils/IRequestWithUserId';
 
 //Dependency Injection
-import { CoinService } from '../../../../src/modules/coin/CoinService';
-import { CoinRepository } from '../../../../src/modules/coin/models/repository/CoinRepository';
-import { ProgramRepository } from '../../../../src/modules/coin/models/repository/ProgramRepository';
-import { UserRepository } from '../../../../src/modules/user/models/repository/UserRepository';
+import { CoinService } from '../../../../../src/modules/coin/service/CoinService';
+import { CoinRepository } from '../../../../../src/modules/coin/repository/CoinRepository';
+import { ProgramRepository } from '../../../../../src/modules/coin/repository/ProgramRepository';
+import { UserRepository } from '../../../../../src/modules/user/repository/UserRepository';
 
 
 
@@ -24,7 +24,6 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
 
         let coinService: CoinService = new CoinService(
             instance(mockedCoinRepository),
-            instance(mocekdProgramRepository),
             instance(mockUserRepository)
         );
 
@@ -57,7 +56,6 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
 
         let coinService: CoinService = new CoinService(
             instance(mockedCoinRepository),
-            instance(mocekdProgramRepository),
             instance(mockUserRepository)
         );
 
@@ -91,7 +89,6 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
 
         let coinService: CoinService = new CoinService(
             instance(mockedCoinRepository),
-            instance(mocekdProgramRepository),
             instance(mockUserRepository)
         );
 
@@ -125,7 +122,6 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
 
         let coinService: CoinService = new CoinService(
             instance(mockedCoinRepository),
-            instance(mocekdProgramRepository),
             instance(mockUserRepository)
         );
 

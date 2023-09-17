@@ -3,8 +3,8 @@ import { mock, instance, when, anyString } from 'ts-mockito'
 
 
 //Dependency Injection
-import { UserRepository } from '../../../../src/modules/user/models/repository/UserRepository';
-import { UserMiddlewares } from '../../../../src/modules/user/UserMiddlewares';
+import { UserRepository } from '../../../../src/modules/user/repository/UserRepository';
+import { UserMiddlewares } from '../../../../src/modules/user/middleware/UserMiddlewares';
 import { TokenManagement } from '../../../../src/modules/user/utils/TokenManagement';
 import { IRequestWithUserId } from '../../../../src/modules/user/utils/IRequestWithUserId';
 

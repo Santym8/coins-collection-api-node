@@ -1,8 +1,8 @@
 import { mock, instance, when, anything, anyString } from 'ts-mockito'
 import { Request, Response } from 'express';
 //Dependency Injection
-import { UserService } from '../../../../src/modules/user/UserSevice';
-import { UserRepository } from '../../../../src/modules/user/models/repository/UserRepository';
+import { UserService } from '../../../../src/modules/user/service/UserSevice';
+import { UserRepository } from '../../../../src/modules/user/repository/UserRepository';
 import { TokenManagement } from '../../../../src/modules/user/utils/TokenManagement';
 import { EncryptionManagement } from '../../../../src/modules/user/utils/EncryptionManagement';
 

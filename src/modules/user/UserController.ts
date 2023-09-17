@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { Router, Request, Response } from "express";
-import { UserService } from './UserSevice';
-import { UserMiddlewares } from './UserMiddlewares';
+import { UserService } from './service/UserSevice';
+import { UserMiddlewares } from './middleware/UserMiddlewares';
 import { IController } from '../../utils/interfaces/IController';
 
 @Service()

@@ -1,5 +1,5 @@
 import { Service } from "typedi";
-import UserModel from "../User";
+import UserModel from "../models/User";
 import { IUser } from "../interfaces/IUser";
 import { Document } from 'mongoose';
 

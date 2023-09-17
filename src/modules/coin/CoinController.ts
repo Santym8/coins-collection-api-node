@@ -1,9 +1,10 @@
 import { Service } from 'typedi';
 import { Router, Request, Response } from "express";
-import { CoinService } from './CoinService';
+import { CoinService } from './service/CoinService';
 
 import { IController } from '../../utils/interfaces/IController';
-import { CoinMiddlewares } from './CoinMiddlewares';
+import { CoinMiddlewares } from './middleware/CoinMiddlewares';
+import { ProgramService } from './service/ProgramService';
 
 @Service()
 export class CoinController implements IController {
@@ -12,7 +13,8 @@ export class CoinController implements IController {
 
     constructor(
         private readonly coinService: CoinService,
-        private readonly coinMiddlewares: CoinMiddlewares
+        private readonly coinMiddlewares: CoinMiddlewares,
+        private readonly programService: ProgramService
     ) {
         this.router = Router();
         this.addRoutes();
@@ -22,7 +24,7 @@ export class CoinController implements IController {
         this.router.get(
             '/programs',
             this.coinMiddlewares.grantAccess,
-            (req: Request, res: Response) => this.coinService.getPrograms(req, res));
+            (req: Request, res: Response) => this.programService.getPrograms(req, res));
 
         this.router.get(
             '/coins_of_collector',
