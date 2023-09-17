@@ -1,6 +1,6 @@
 import { Service } from "typedi";
 //----Models----------
-import CoinModel from '../Coin';
+import CoinModel from '../models/Coin';
 import { IProgram } from "../interfaces/IProgram";
 
 @Service()

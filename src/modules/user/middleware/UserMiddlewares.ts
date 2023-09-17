@@ -1,9 +1,9 @@
 import { Service } from 'typedi';
 import { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
-import { UserRepository } from './models/repository/UserRepository';
-import { IRequestWithUserId } from './utils/IRequestWithUserId';
-import { TokenManagement } from './utils/TokenManagement';
+import { UserRepository } from '../repository/UserRepository';
+import { IRequestWithUserId } from '../utils/IRequestWithUserId';
+import { TokenManagement } from '../utils/TokenManagement';
 
 @Service()
 export class UserMiddlewares {

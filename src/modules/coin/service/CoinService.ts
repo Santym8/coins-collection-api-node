@@ -1,9 +1,8 @@
 import { Service } from 'typedi';
 import { Request, Response } from 'express';
-import { CoinRepository } from './models/repository/CoinRepository';
-import { ProgramRepository } from './models/repository/ProgramRepository';
-import { UserRepository } from '../user/models/repository/UserRepository';
-import { IRequestWithUserId } from '../user/utils/IRequestWithUserId';
+import { CoinRepository } from '../repository/CoinRepository';
+import { UserRepository } from '../../user/repository/UserRepository';
+import { IRequestWithUserId } from '../../user/utils/IRequestWithUserId';
 
 
 @Service()
@@ -11,7 +10,6 @@ export class CoinService {
 
     constructor(
         private readonly coinRepository: CoinRepository,
-        private readonly programRepository: ProgramRepository,
         private readonly userRepository: UserRepository
     ) { }
 
@@ -84,11 +82,7 @@ export class CoinService {
         return res.status(200).json({ message: action });
     }
 
-    public async getPrograms(req: Request, res: Response) {
-        const programs = await this.programRepository.getAllPrograms();
-        res.status(200).json(programs);
-    }
-
+    
 
 
 }
