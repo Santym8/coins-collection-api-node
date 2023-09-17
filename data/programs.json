@@ -1,0 +1,20 @@
+[
+    {
+        "_id": "621ea811cee5982b1c89109e",
+        "name": "American Women Quarters",
+        "amount": 20,
+        "status": true
+    },
+    {
+        "_id": "621ea91205114d81e91e1536",
+        "name": "50 State Quarters",
+        "amount": 56,
+        "status": true
+    },
+    {
+        "_id": "621ea91f05114d81e91e1538",
+        "name": "America the Beautiful Quarters",
+        "amount": 56,
+        "status": true
+    }
+]

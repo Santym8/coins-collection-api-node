@@ -5,8 +5,8 @@ export interface ICoin {
     program: Types.ObjectId;
     coinNumber: Number;
     name: String;
-    year: Number;
+    year: String;
     image: String;
-    description: String;
+    description?: String;
     status: Boolean;
 }

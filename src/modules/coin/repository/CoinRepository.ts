@@ -1,7 +1,7 @@
 import { Service } from "typedi";
 //----Models----------
 import CoinModel from '../models/Coin';
-import { IProgram } from "../interfaces/IProgram";
+import { ICoin } from "../interfaces/ICoin";
 
 @Service()
 export class CoinRepository {
@@ -11,5 +11,9 @@ export class CoinRepository {
 
     public async getCoinById(id: string) {
         return await CoinModel.findById(id);
+    }
+
+    public async saveCoin(coin: ICoin) {
+        return await new CoinModel(coin).save();
     }
 }

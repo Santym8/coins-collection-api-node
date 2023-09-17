@@ -7,7 +7,7 @@
         "start": "node build/index.js",
         "ts": "tsc -w",
         "build": "tsc",
-        "dev": "nodemon ./build/index",
+        "dev": "nodemon ./build/src/",
         "test": "jest"
     },
     "keywords": [],
