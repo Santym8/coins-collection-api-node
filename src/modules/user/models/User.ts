@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
-import bcrypt from 'bcryptjs';
 import { IUser } from "../interfaces/IUser";
+import { EncryptionManagement } from "../utils/EncryptionManagement";
+import { Container } from 'typedi';
 
 const userSchema = new Schema<IUser>({
     username: { type: String, required: true, unique: true },
@@ -20,9 +21,8 @@ userSchema.pre('save', async function (next) {
 
     //If the password is being changed, it should be re-encrypted
     try {
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(user.password, salt);
-        user.password = hash;
+        const encryptionManagement = Container.get(EncryptionManagement);
+        user.password = await encryptionManagement.encryptPassword(user.password);
     } catch (error) {
         console.log(error);
     }
