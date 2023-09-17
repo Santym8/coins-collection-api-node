@@ -18,6 +18,7 @@ import { CoinController } from './modules/coin/CoinController';
 import { UserController } from './modules/user/UserController';
 import { IController } from './utils/interfaces/IController';
 import { IUrlController } from './utils/interfaces/IUrlController';
+import { PopulateDataBase } from './config/populate.data';
 
 
 
@@ -56,7 +57,12 @@ export class Server {
     private config() {
         dotenv.config();
         this.app.set('port', process.env.PORT || 3000);
-        DataBase.configDataBase();
+        
+        new DataBase().configDataBase();
+        if(process.env.POPULATE == 'true'){
+            new PopulateDataBase().populate();
+        }
+
         this.addMiddlewares();
         this.addRouters()
     }

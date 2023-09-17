@@ -4,10 +4,10 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "node build/index.js",
+        "start": "node build/src/index.js",
         "ts": "tsc -w",
         "build": "tsc",
-        "dev": "nodemon ./build/index",
+        "dev": "nodemon ./build/src/",
         "test": "jest"
     },
     "keywords": [],
