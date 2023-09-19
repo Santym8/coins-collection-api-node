@@ -24,30 +24,25 @@ export class UserService {
     }
 
     public async login(req: Request, res: Response) {
-        try {
-            const { username, password } = req.query;
+        const { username, password }: { username: string, password: string } = req.body;
 
-            if (username == undefined || password == undefined) {
-                return res.status(422).json({ message: 'Empty fields' });
-            }
-
-            const user = await this.userRepository.getUserByUsername(username as string);
-            if (!user) {
-                return res.status(404).json({ message: 'The user does not exist' });
-            }
-
-            const matchPassword = await this.encryptionManagement.verifyPassword(password as string, user.password);
-            if (!matchPassword) {
-                return res.status(401).json({ message: 'Incorrect password' });
-            }
-
-            const token = this.tokenManagement.newToken(user.id);
-            return res.status(200).json({ token });
-        } catch (error: any) {
-            return res.json({ message: error.message });
+        if (username == undefined || password == undefined) {
+            return res.status(422).json({ message: 'Empty fields' });
         }
 
+        const user = await this.userRepository.getUserByUsername(username);
+        if (!user) {
+            return res.status(404).json({ message: 'The user does not exist' });
+        }
+
+        const matchPassword = await this.encryptionManagement
+            .verifyPassword(password, user.password);
+            
+        if (!matchPassword) {
+            return res.status(401).json({ message: 'Incorrect password' });
+        }
+
+        const token = this.tokenManagement.newToken(user.id);
+        return res.status(200).json({ token });
     }
-
-
 }
