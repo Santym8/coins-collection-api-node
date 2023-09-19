@@ -23,7 +23,7 @@ describe('User-Service-Login', () => {
         );
 
         //When: Request has Empty fields
-        let request: Partial<Request> = { query: {} };
+        let request: Partial<Request> = { body: {} };
         let response: Partial<Response> = {
             json: jest.fn()
         };
@@ -51,7 +51,7 @@ describe('User-Service-Login', () => {
 
         //When: No username found
         let request: Partial<Request> = {
-            query: {
+            body: {
                 username: 'name',
                 password: 'password'
             }
@@ -86,7 +86,7 @@ describe('User-Service-Login', () => {
 
         //When: Icorrect password
         let request: Partial<Request> = {
-            query: {
+            body: {
                 username: 'name',
                 password: 'password'
             }
@@ -121,7 +121,7 @@ describe('User-Service-Login', () => {
 
         //When: name and password are ok
         let request: Partial<Request> = {
-            query: {
+            body: {
                 username: 'name',
                 password: 'password'
             }
