@@ -17,8 +17,8 @@ export class UserController implements IController {
     }
 
     private addRoutes(): void {
-        this.router.get(
-            '/',
+        this.router.post(
+            '/login',
             (req: Request, res: Response) => this.userService.login(req, res));
 
         this.router.post(
