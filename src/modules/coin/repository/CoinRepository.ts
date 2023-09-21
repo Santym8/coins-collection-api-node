@@ -1,11 +1,12 @@
 import { Service } from "typedi";
 //----Models----------
-import CoinModel from '../models/Coin';
-import { ICoin } from "../interfaces/ICoin";
+import CoinModel from '../model/Coin';
+import { ICoin } from "../interface/ICoin";
 
 @Service()
 export class CoinRepository {
-    public async getAllCoinsOfProgram() {
+
+    public async getAllCoins() {
         return await CoinModel.find().sort('coinNumber');
     }
 
