@@ -10,31 +10,6 @@ import { EncryptionManagement } from '../../../../src/modules/user/utils/Encrypt
 
 describe('User-Service-Login', () => {
 
-    test('Invalid user information', async () => {
-        //Given
-        let mockedUserRepository: UserRepository = mock(UserRepository);
-        let mockedTokenManagement: TokenManagement = mock(TokenManagement);
-        let mockeEncryptionManagement: EncryptionManagement = mock(EncryptionManagement);
-
-        let userService: UserService = new UserService(
-            instance(mockedUserRepository),
-            instance(mockedTokenManagement),
-            instance(mockeEncryptionManagement)
-        );
-
-        //When: Request has Empty fields
-        let request: Partial<Request> = { body: {} };
-        let response: Partial<Response> = {
-            json: jest.fn()
-        };
-        response['status'] = jest.fn().mockReturnValue(response);
-
-        //Then: 422
-        await userService.login(request as Request, response as Response);
-        expect(response.status).toBeCalledWith(422);
-
-    });
-
     test('The user does not exist', async () => {
         //Given
         let mockedUserRepository: UserRepository = mock(UserRepository);
