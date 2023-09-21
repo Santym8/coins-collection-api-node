@@ -21,7 +21,6 @@ import { PopulateDataBase } from './config/data-base/populate.data';
 import { ProgramController } from './modules/program/ProgramController';
 import { CoinController } from './modules/coin/CoinController';
 import { JwtMiddleware } from './config/jwt/JwtMiddleware';
-import { GlobalErrorHandling } from './config/error-handling/GlobalErrorHandling';
 
 
 
@@ -57,7 +56,6 @@ export class Server {
         this.app.use(express.json());
         this.app.use(compression());
         this.app.use(cors());
-        this.app.use(Container.get(GlobalErrorHandling).middleware)
         this.app.use(Container.get(JwtMiddleware).verifyToken);
     }
 
