@@ -23,7 +23,7 @@ export class UserController implements IController {
             (req: Request, res: Response) => this.userService.login(req, res));
 
         this.router.post(
-            '/create',
+            '/register',
             this.userMiddlewares.createUserMiddleware,
             (req: Request, res: Response) => this.userService.createUser(req, res));
     }
