@@ -1,7 +1,7 @@
 import { Service } from "typedi";
 //----Models----------
-import ProgramModel from '../models/Program'
-import { IProgram } from "../interfaces/IProgram";
+import ProgramModel from '../model/Program'
+import { IProgram } from "../interface/IProgram";
 
 @Service()
 export class ProgramRepository{
