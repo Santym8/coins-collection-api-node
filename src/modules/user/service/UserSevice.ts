@@ -24,11 +24,7 @@ export class UserService {
     }
 
     public async login(req: Request, res: Response) {
-        const { username, password }: { username: string, password: string } = req.body;
-
-        if (username == undefined || password == undefined) {
-            return res.status(422).json({ message: 'Empty fields' });
-        }
+        const { username, password } = req.body;
 
         const user = await this.userRepository.getUserByUsername(username);
         if (!user) {
