@@ -4,7 +4,6 @@ import { CoinsCollectorService } from './service/CoinsCollectorService';
 
 import { IController } from '../../utils/interfaces/IController';
 import { CoinMiddlewares } from './middleware/CoinsCollectorMiddlewares';
-import { ProgramService } from './service/ProgramService';
 
 @Service()
 export class CoinsCollectorController implements IController {
@@ -14,18 +13,12 @@ export class CoinsCollectorController implements IController {
     constructor(
         private readonly coinService: CoinsCollectorService,
         private readonly coinMiddlewares: CoinMiddlewares,
-        private readonly programService: ProgramService
     ) {
         this.router = Router();
         this.addRoutes();
     }
 
     private addRoutes() {
-        this.router.get(
-            '/programs',
-            this.coinMiddlewares.grantAccess,
-            (req: Request, res: Response) => this.programService.getPrograms(req, res));
-
         this.router.get(
             '/coins_of_collector',
             this.coinMiddlewares.grantAccess,

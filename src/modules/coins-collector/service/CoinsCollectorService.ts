@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { Request, Response } from 'express';
-import { CoinRepository } from '../repository/CoinRepository';
+import { CoinRepository } from '../../coin/repository/CoinRepository';
 import { UserRepository } from '../../user/repository/UserRepository';
 import { IRequestWithUserId } from '../../user/utils/IRequestWithUserId';
 
@@ -24,7 +24,7 @@ export class CoinsCollectorService {
             return res.status(400).json({ message: 'The User does not exist' })
         }
 
-        const coins = await this.coinRepository.getAllCoinsOfProgram();
+        const coins = await this.coinRepository.getAllCoins();
         if (!coins || coins.length == 0) {
             return res.status(400).json({ message: 'No coins' })
         }

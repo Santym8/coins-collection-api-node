@@ -19,6 +19,8 @@ import { UserController } from './modules/user/UserController';
 import { IController } from './utils/interfaces/IController';
 import { IUrlController } from './utils/interfaces/IUrlController';
 import { PopulateDataBase } from './config/populate.data';
+import { ProgramController } from './modules/program/ProgramController';
+import { CoinController } from './modules/coin/CoinController';
 
 
 
@@ -30,7 +32,9 @@ export class Server {
 
     private urlsControllers: IUrlController[] = [
         { url: '/api/user', controller: Container.get<IController>(UserController) },
-        { url: '/api/coin', controller: Container.get<IController>(CoinsCollectorController) },
+        { url: '/api/coin', controller: Container.get<IController>(CoinController)},
+        { url: '/api/program', controller: Container.get<IController>(ProgramController)},
+        { url: '/api/coins-collector', controller: Container.get<IController>(CoinsCollectorController) },
     ];
 
     constructor() {
