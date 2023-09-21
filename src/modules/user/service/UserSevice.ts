@@ -4,6 +4,10 @@ import { Request, Response } from 'express';
 import { UserRepository } from '../repository/UserRepository';
 import { TokenManagement } from '../../../config/jwt/TokenManagement';
 import { EncryptionManagement } from '../../../config/encryption/EncryptionManagement';
+import { IUser } from '../interfaces/IUser';
+import { UserException } from '../exception/UserException';
+import { LoginRequest } from '../dto/LoginRequest';
+import { RegisterRequest } from '../dto/RegisterRequest';
 
 @Service()
 export class UserService {
@@ -14,31 +18,35 @@ export class UserService {
         private readonly encryptionManagement: EncryptionManagement
     ) { }
 
-    public async createUser(req: Request, res: Response) {
-        const newUserId = await this.userRepository.createUser(req.body);
+    public async createUser(registerRequest: RegisterRequest): Promise<string> {
+        const user:IUser = {
+            username: registerRequest.getUsername(),
+            password: registerRequest.getPassword(),
+            email: registerRequest.getEmail()
+        };   
+        const newUserId = await this.userRepository.createUser(user);
         if (!newUserId) {
-            return res.status(422).json({ errors: 'Error' });
+            throw new UserException('The user could not be created', 500);
         }
         const token = this.tokenManagement.newToken(newUserId);
-        return res.status(200).json({ token });
+        return token;
     }
 
-    public async login(req: Request, res: Response) {
-        const { username, password } = req.body;
-
-        const user = await this.userRepository.getUserByUsername(username);
+    public async login(req:LoginRequest): Promise<string> {
+       
+        const user = await this.userRepository.getUserByUsername(req.getUsername());
         if (!user) {
-            return res.status(404).json({ message: 'The user does not exist' });
+            throw new UserException('The user does not exist', 404);
         }
 
         const matchPassword = await this.encryptionManagement
-            .verifyPassword(password, user.password);
-            
+            .verifyPassword(req.getPassword(), user.password);
+
         if (!matchPassword) {
-            return res.status(401).json({ message: 'Incorrect password' });
+            throw new UserException('Incorrect password', 401);
         }
 
         const token = this.tokenManagement.newToken(user.id);
-        return res.status(200).json({ token });
+        return token;
     }
 }
