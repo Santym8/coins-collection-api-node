@@ -4,13 +4,13 @@ import { IRequestWithUserId } from '../../../../../src/modules/user/utils/IReque
 
 //Dependency Injection
 import { CoinsCollectorService } from '../../../../../src/modules/coins-collector/service/CoinsCollectorService';
-import { CoinRepository } from '../../../../../src/modules/coins-collector/repository/CoinRepository';
-import { ProgramRepository } from '../../../../../src/modules/coins-collector/repository/ProgramRepository';
+import { CoinRepository } from '../../../../../src/modules/coin/repository/CoinRepository';
+import { ProgramRepository } from '../../../../../src/modules/program/repository/ProgramRepository';
 import { UserRepository } from '../../../../../src/modules/user/repository/UserRepository';
 
 
 
-describe('Coin-Service-AddDeleteCoinOfCollection', () => {
+describe('CoinsCollectorService-AddDeleteCoinOfCollection', () => {
 
     test('The User does not exist', async () => {
 
