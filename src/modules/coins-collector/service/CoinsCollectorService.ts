@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import { Request, Response } from 'express';
 import { CoinRepository } from '../../coin/repository/CoinRepository';
 import { UserRepository } from '../../user/repository/UserRepository';
-import { IRequestWithUserId } from '../../user/utils/IRequestWithUserId';
+import { IRequestWithUserId } from '../../../config/jwt/IRequestWithUserId';
 
 
 @Service()

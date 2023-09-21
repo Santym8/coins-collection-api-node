@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 import { IUser } from "../interfaces/IUser";
-import { EncryptionManagement } from "../utils/EncryptionManagement";
+import { EncryptionManagement } from "../../../config/encryption/EncryptionManagement";
 import { Container } from 'typedi';
 
 const userSchema = new Schema<IUser>({

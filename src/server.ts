@@ -5,7 +5,7 @@ import { Container } from 'typedi';
 //----------Configurations----------
 import express from 'express';
 import * as dotenv from 'dotenv';
-import { DataBase } from './config/db.mongo';
+import { DataBase } from './config/data-base/db.mongo';
 
 //------------Midlewares-----------
 import compression from 'compression';
@@ -18,9 +18,11 @@ import { CoinsCollectorController } from './modules/coins-collector/CoinsCollect
 import { UserController } from './modules/user/UserController';
 import { IController } from './utils/interfaces/IController';
 import { IUrlController } from './utils/interfaces/IUrlController';
-import { PopulateDataBase } from './config/populate.data';
+import { PopulateDataBase } from './config/data-base/populate.data';
 import { ProgramController } from './modules/program/ProgramController';
 import { CoinController } from './modules/coin/CoinController';
+import { JwtMiddleware } from './config/jwt/JwtMiddleware';
+import { GlobalErrorHandling } from './config/error-handling/GlobalErrorHandling';
 
 
 
@@ -56,6 +58,8 @@ export class Server {
         this.app.use(express.json());
         this.app.use(compression());
         this.app.use(cors());
+        this.app.use(Container.get(GlobalErrorHandling).middleware)
+        this.app.use(Container.get(JwtMiddleware).verifyToken);
     }
 
     private config() {
