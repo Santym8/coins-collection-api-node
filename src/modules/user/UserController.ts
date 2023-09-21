@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { Router, Request, Response } from "express";
 import { UserService } from './service/UserSevice';
-import { UserMiddlewares } from './middleware/UserMiddlewares';
+import { UserValidationMiddleware } from './middleware/UserValidationMiddleware';
 import { IController } from '../../utils/interfaces/IController';
 
 @Service()
@@ -10,7 +10,7 @@ export class UserController implements IController {
 
     constructor(
         private readonly userService: UserService,
-        private readonly userMiddlewares: UserMiddlewares
+        private readonly userValidationMiddleware: UserValidationMiddleware
     ) {
         this.router = Router();
         this.addRoutes();
@@ -19,12 +19,12 @@ export class UserController implements IController {
     private addRoutes(): void {
         this.router.post(
             '/login',
-            this.userMiddlewares.loginMiddleware,
+            this.userValidationMiddleware.getLoginMiddleware(),
             (req: Request, res: Response) => this.userService.login(req, res));
 
         this.router.post(
             '/register',
-            this.userMiddlewares.createUserMiddleware,
+            this.userValidationMiddleware.getCreateUserMiddleware(),
             (req: Request, res: Response) => this.userService.createUser(req, res));
     }
 

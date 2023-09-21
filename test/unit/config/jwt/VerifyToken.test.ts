@@ -4,7 +4,6 @@ import { JwtMiddleware } from '../../../../src/config/jwt/JwtMiddleware';
 
 //Dependency Injection
 import { UserRepository } from '../../../../src/modules/user/repository/UserRepository';
-import { UserMiddlewares } from '../../../../src/modules/user/middleware/UserMiddlewares';
 import { TokenManagement } from '../../../../src/config/jwt/TokenManagement';
 import { IRequestWithUserId } from '../../../../src/config/jwt/IRequestWithUserId';
 
