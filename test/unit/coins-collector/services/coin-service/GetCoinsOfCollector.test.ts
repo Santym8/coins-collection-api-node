@@ -3,9 +3,9 @@ import { Response } from 'express';
 import { IRequestWithUserId } from '../../../../../src/modules/user/utils/IRequestWithUserId';
 
 //Dependency Injection
-import { CoinService } from '../../../../../src/modules/coin/service/CoinService';
-import { CoinRepository } from '../../../../../src/modules/coin/repository/CoinRepository';
-import { ProgramRepository } from '../../../../../src/modules/coin/repository/ProgramRepository';
+import { CoinsCollectorService } from '../../../../../src/modules/coins-collector/service/CoinsCollectorService';
+import { CoinRepository } from '../../../../../src/modules/coins-collector/repository/CoinRepository';
+import { ProgramRepository } from '../../../../../src/modules/coins-collector/repository/ProgramRepository';
 import { UserRepository } from '../../../../../src/modules/user/repository/UserRepository';
 
 
@@ -22,7 +22,7 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
         let fakeUser: any = null;
         when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
 
-        let coinService: CoinService = new CoinService(
+        let coinService: CoinsCollectorService = new CoinsCollectorService(
             instance(mockedCoinRepository),
             instance(mockUserRepository)
         );
@@ -38,7 +38,7 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
         };
         response['status'] = jest.fn().mockReturnValue(response);
 
-        await coinService.addDeleteCoinOfCollection(request as IRequestWithUserId, response as Response);
+        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
         expect(response.status).toBeCalledWith(400);
         expect(response.json).toBeCalledWith({ message: 'The User does not exist' });
     });
@@ -54,7 +54,7 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
         let fakeUser: any = {};
         when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
 
-        let coinService: CoinService = new CoinService(
+        let coinService: CoinsCollectorService = new CoinsCollectorService(
             instance(mockedCoinRepository),
             instance(mockUserRepository)
         );
@@ -70,7 +70,7 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
         };
         response['status'] = jest.fn().mockReturnValue(response);
 
-        await coinService.addDeleteCoinOfCollection(request as IRequestWithUserId, response as Response);
+        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
         expect(response.status).toBeCalledWith(400);
         expect(response.json).toBeCalledWith({ message: 'The Coin does not exist' });
     });
@@ -87,7 +87,7 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
         let fakeUser: any = { coins: ['621fcd41e23536204e045742', '621fcd41e23536204e045740'] };
         when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
 
-        let coinService: CoinService = new CoinService(
+        let coinService: CoinsCollectorService = new CoinsCollectorService(
             instance(mockedCoinRepository),
             instance(mockUserRepository)
         );
@@ -103,7 +103,7 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
         };
         response['status'] = jest.fn().mockReturnValue(response);
 
-        await coinService.addDeleteCoinOfCollection(request as IRequestWithUserId, response as Response);
+        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
         expect(response.status).toBeCalledWith(200);
         expect(response.json).toBeCalledWith({ message: 'Added' });
     });
@@ -120,7 +120,7 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
         let fakeUser: any = { coins: ['621fcd41e23536204e045742', '621fcd41e23536204e045740'] };
         when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
 
-        let coinService: CoinService = new CoinService(
+        let coinService: CoinsCollectorService = new CoinsCollectorService(
             instance(mockedCoinRepository),
             instance(mockUserRepository)
         );
@@ -136,7 +136,7 @@ describe('Coin-Service-AddDeleteCoinOfCollection', () => {
         };
         response['status'] = jest.fn().mockReturnValue(response);
 
-        await coinService.addDeleteCoinOfCollection(request as IRequestWithUserId, response as Response);
+        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
         expect(response.status).toBeCalledWith(200);
         expect(response.json).toBeCalledWith({ message: 'Removed' });
     });

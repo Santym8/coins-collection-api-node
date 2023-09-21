@@ -14,7 +14,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 //------------Controllers--------
-import { CoinController } from './modules/coin/CoinController';
+import { CoinsCollectorController } from './modules/coins-collector/CoinsCollectorController';
 import { UserController } from './modules/user/UserController';
 import { IController } from './utils/interfaces/IController';
 import { IUrlController } from './utils/interfaces/IUrlController';
@@ -30,7 +30,7 @@ export class Server {
 
     private urlsControllers: IUrlController[] = [
         { url: '/api/user', controller: Container.get<IController>(UserController) },
-        { url: '/api/coin', controller: Container.get<IController>(CoinController) },
+        { url: '/api/coin', controller: Container.get<IController>(CoinsCollectorController) },
     ];
 
     constructor() {

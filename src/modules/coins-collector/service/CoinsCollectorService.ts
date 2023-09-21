@@ -6,7 +6,7 @@ import { IRequestWithUserId } from '../../user/utils/IRequestWithUserId';
 
 
 @Service()
-export class CoinService {
+export class CoinsCollectorService {
 
     constructor(
         private readonly coinRepository: CoinRepository,
@@ -14,7 +14,7 @@ export class CoinService {
     ) { }
 
 
-    public async getAllCoins(req: IRequestWithUserId, res: Response) {
+    public async getAllCoinsWithFounded(req: IRequestWithUserId, res: Response) {
         const { idCollection } = req.query;
         const idCollector = req.userId;
 
@@ -52,7 +52,7 @@ export class CoinService {
 
     }
 
-    public async addDeleteCoinOfCollection(req: IRequestWithUserId, res: Response) {
+    public async addOrDeleteCoinOfCollector(req: IRequestWithUserId, res: Response) {
         const { idCoin } = req.body;
         const idCollector = req.userId;
 
