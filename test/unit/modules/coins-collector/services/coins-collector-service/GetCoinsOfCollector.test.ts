@@ -1,12 +1,12 @@
 import { mock, instance, when, anything, anyString } from 'ts-mockito'
 import { Response } from 'express';
-import { IRequestWithUserId } from '../../../../../src/modules/user/utils/IRequestWithUserId';
+import { IRequestWithUserId } from '../../../../../../src/config/jwt/IRequestWithUserId';
 
 //Dependency Injection
-import { CoinsCollectorService } from '../../../../../src/modules/coins-collector/service/CoinsCollectorService';
-import { CoinRepository } from '../../../../../src/modules/coin/repository/CoinRepository';
-import { ProgramRepository } from '../../../../../src/modules/program/repository/ProgramRepository';
-import { UserRepository } from '../../../../../src/modules/user/repository/UserRepository';
+import { CoinsCollectorService } from '../../../../../../src/modules/coins-collector/service/CoinsCollectorService';
+import { CoinRepository } from '../../../../../../src/modules/coin/repository/CoinRepository';
+import { ProgramRepository } from '../../../../../../src/modules/program/repository/ProgramRepository';
+import { UserRepository } from '../../../../../../src/modules/user/repository/UserRepository';
 
 
 

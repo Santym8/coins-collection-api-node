@@ -2,8 +2,8 @@ import { Service } from 'typedi';
 import { Request, Response } from 'express';
 
 import { UserRepository } from '../repository/UserRepository';
-import { TokenManagement } from '../utils/TokenManagement';
-import { EncryptionManagement } from '../utils/EncryptionManagement';
+import { TokenManagement } from '../../../config/jwt/TokenManagement';
+import { EncryptionManagement } from '../../../config/encryption/EncryptionManagement';
 
 @Service()
 export class UserService {
