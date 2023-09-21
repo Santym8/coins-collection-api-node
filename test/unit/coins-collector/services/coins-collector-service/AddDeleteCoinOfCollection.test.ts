@@ -4,19 +4,19 @@ import { IRequestWithUserId } from '../../../../../src/modules/user/utils/IReque
 import { fakeCoinsDB, fakeCoinsResponse, fakeUserCoinsDB } from '../FakeDB';
 //Dependency Injection
 import { CoinsCollectorService } from '../../../../../src/modules/coins-collector/service/CoinsCollectorService';
-import { CoinRepository } from '../../../../../src/modules/coins-collector/repository/CoinRepository';
-import { ProgramRepository } from '../../../../../src/modules/coins-collector/repository/ProgramRepository';
+import { CoinRepository } from '../../../../../src/modules/coin/repository/CoinRepository';
+import { ProgramRepository } from '../../../../../src/modules/program/repository/ProgramRepository';
 import { UserRepository } from '../../../../../src/modules/user/repository/UserRepository';
 
 
 
-describe('Coin-Service-GetCoinsOfCollector', () => {
+describe('CoinsCollectorService-GetCoinsOfCollector', () => {
 
     test('The User does not exist', async () => {
 
         let mockedCoinRepository: CoinRepository = mock(CoinRepository);
         let fakeCoins: any = {};
-        when(mockedCoinRepository.getAllCoinsOfProgram()).thenResolve(fakeCoins);
+        when(mockedCoinRepository.getAllCoins()).thenResolve(fakeCoins);
 
         let mocekdProgramRepository: ProgramRepository = mock(ProgramRepository);
         let mockUserRepository: UserRepository = mock(UserRepository);
@@ -50,7 +50,7 @@ describe('Coin-Service-GetCoinsOfCollector', () => {
 
         let mockedCoinRepository: CoinRepository = mock(CoinRepository);
         let fakeCoins: any = [];
-        when(mockedCoinRepository.getAllCoinsOfProgram()).thenResolve(fakeCoins);
+        when(mockedCoinRepository.getAllCoins()).thenResolve(fakeCoins);
 
         let mocekdProgramRepository: ProgramRepository = mock(ProgramRepository);
         let mockUserRepository: UserRepository = mock(UserRepository);
@@ -85,7 +85,7 @@ describe('Coin-Service-GetCoinsOfCollector', () => {
 
         let mockedCoinRepository: CoinRepository = mock(CoinRepository);
         let fakeCoins: any = fakeCoinsDB;
-        when(mockedCoinRepository.getAllCoinsOfProgram()).thenResolve(fakeCoins);
+        when(mockedCoinRepository.getAllCoins()).thenResolve(fakeCoins);
 
         let mocekdProgramRepository: ProgramRepository = mock(ProgramRepository);
 
