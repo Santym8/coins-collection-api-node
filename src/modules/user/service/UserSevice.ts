@@ -19,11 +19,12 @@ export class UserService {
     ) { }
 
     public async createUser(registerRequest: RegisterRequest): Promise<string> {
-        const user:IUser = {
+        const user: IUser = {
             username: registerRequest.getUsername(),
             password: registerRequest.getPassword(),
-            email: registerRequest.getEmail()
-        };   
+            email: registerRequest.getEmail(),
+            coins: []
+        };
         const newUserId = await this.userRepository.createUser(user);
         if (!newUserId) {
             throw new UserException('The user could not be created', 500);
@@ -32,8 +33,8 @@ export class UserService {
         return token;
     }
 
-    public async login(req:LoginRequest): Promise<string> {
-       
+    public async login(req: LoginRequest): Promise<string> {
+
         const user = await this.userRepository.getUserByUsername(req.getUsername());
         if (!user) {
             throw new UserException('The user does not exist', 404);
