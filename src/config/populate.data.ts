@@ -1,7 +1,7 @@
-import { ICoin } from '../modules/coin/interfaces/ICoin';
-import { IProgram } from '../modules/coin/interfaces/IProgram';
-import { CoinRepository } from '../modules/coin/repository/CoinRepository';
-import { ProgramRepository } from '../modules/coin/repository/ProgramRepository';
+import { ICoin } from '../modules/coins-collector/interfaces/ICoin';
+import { IProgram } from '../modules/coins-collector/interfaces/IProgram';
+import { CoinRepository } from '../modules/coins-collector/repository/CoinRepository';
+import { ProgramRepository } from '../modules/coins-collector/repository/ProgramRepository';
 
 import coinParks from '../../data/parks.json';
 import coinStates from '../../data/states.json';
