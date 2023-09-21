@@ -1,18 +1,18 @@
 import { Service } from 'typedi';
 import { Router, Request, Response } from "express";
-import { CoinService } from './service/CoinService';
+import { CoinsCollectorService } from './service/CoinsCollectorService';
 
 import { IController } from '../../utils/interfaces/IController';
-import { CoinMiddlewares } from './middleware/CoinMiddlewares';
+import { CoinMiddlewares } from './middleware/CoinsCollectorMiddlewares';
 import { ProgramService } from './service/ProgramService';
 
 @Service()
-export class CoinController implements IController {
+export class CoinsCollectorController implements IController {
 
     private router: Router;
 
     constructor(
-        private readonly coinService: CoinService,
+        private readonly coinService: CoinsCollectorService,
         private readonly coinMiddlewares: CoinMiddlewares,
         private readonly programService: ProgramService
     ) {
@@ -29,12 +29,12 @@ export class CoinController implements IController {
         this.router.get(
             '/coins_of_collector',
             this.coinMiddlewares.grantAccess,
-            (req: Request, res: Response) => this.coinService.getAllCoins(req, res));
+            (req: Request, res: Response) => this.coinService.getAllCoinsWithFounded(req, res));
 
         this.router.put(
             '/add_delete',
             this.coinMiddlewares.grantAccess,
-            (req: Request, res: Response) => this.coinService.addDeleteCoinOfCollection(req, res));
+            (req: Request, res: Response) => this.coinService.addOrDeleteCoinOfCollector(req, res));
     }
 
     public getRouter(): Router {
