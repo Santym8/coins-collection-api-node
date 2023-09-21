@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { body } from 'express-validator';
-import { ValidationMiddleware } from '../../../config/error-handling/GlobalErrorHandling';
+import { ValidationMiddleware } from '../../../config/error-handling/ValidationMiddleware';
 
 @Service()
 export class UserValidationMiddleware extends ValidationMiddleware {
