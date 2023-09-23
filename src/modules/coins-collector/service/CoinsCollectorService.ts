@@ -53,24 +53,29 @@ export class CoinsCollectorService {
 
     }
 
-    public async addOrDeleteCoinOfCollector(req: IRequestWithUserId, res: Response) {
-        const { idCoin } = req.body;
-        const idCollector = req.userId;
+    public async addOrDeleteCoinOfCollector(idCollector: string, idCoin: string) {
 
-        const collector = await this.userRepository.getUserById(idCollector as string);
+        const collector = await this.userRepository.getUserById(idCollector)
+            .catch(err => {
+                throw new UserException('The User does not exist', 400);
+            });
 
         if (!collector) {
-            return res.status(400).json({ 'message': 'The User does not exist' })
+            throw new UserException('The User does not exist', 400);
         }
 
-        const coin = await this.coinRepository.getCoinById(idCoin);
+        const coin = await this.coinRepository.getCoinById(idCoin)
+            .catch(err => {
+                throw new CoinException('The Coin does not exist', 400);
+            });
+
         if (!coin) {
-            return res.status(400).json({ 'message': 'The Coin does not exist' })
+            throw new CoinException('The Coin does not exist', 400);
         }
 
         let action = "";
-        let coinsOfCollector: string[] = collector.coins as unknown as string[];
-        let indexOfCoin = coinsOfCollector.indexOf(idCoin);
+        const coinsOfCollector: string[] = collector.coins as unknown as string[];
+        const indexOfCoin = coinsOfCollector.indexOf(coin?.id);
         if (indexOfCoin == -1) {
             coinsOfCollector.push(idCoin);
             action = 'Added';
@@ -79,8 +84,14 @@ export class CoinsCollectorService {
             action = 'Removed';
         }
 
-        this.userRepository.saveUserUpdated(collector);
-        return res.status(200).json({ message: action });
+
+        await this.userRepository.saveUserUpdated(collector)
+            .catch(err => {
+                throw new UserException('Error saving the user', 500);
+            });
+
+
+        return { message: action };
     }
 
 

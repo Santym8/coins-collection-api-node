@@ -11,7 +11,7 @@ export class ErrorHandling {
             if(err instanceof CustomError){
                 return res.status(err.getStatusCode()).send(err.message)
             }
-            res.status(500).send(err.message)   
+            res.status(500).send(err)   
         }
     }
 }
