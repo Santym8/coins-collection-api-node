@@ -3,6 +3,9 @@ import { Request, Response } from 'express';
 import { CoinRepository } from '../../coin/repository/CoinRepository';
 import { UserRepository } from '../../user/repository/UserRepository';
 import { IRequestWithUserId } from '../../../config/jwt/IRequestWithUserId';
+import { UserException } from '../../user/exception/UserException';
+import { CoinException } from '../../coin/exception/CoinException';
+import { CoinCollector } from '../dto/CoinCollector';
 
 
 @Service()
@@ -14,32 +17,30 @@ export class CoinsCollectorService {
     ) { }
 
 
-    public async getAllCoinsWithFounded(req: IRequestWithUserId, res: Response) {
-        const { idCollection } = req.query;
-        const idCollector = req.userId;
+    public async getAllCoinsWithFounded(idCollector: string, idCollection: string):
+        Promise<CoinCollector[]> {
 
-        const collector = await this.userRepository.getUserById(idCollector as string);
-
+        const collector = await this.userRepository.getUserById(idCollector);
         if (!collector) {
-            return res.status(400).json({ message: 'The User does not exist' })
+            throw new UserException('The User does not exist', 400);
         }
 
+        // Todo: Filter by collection
         const coins = await this.coinRepository.getAllCoins();
         if (!coins || coins.length == 0) {
-            return res.status(400).json({ message: 'No coins' })
+            throw new CoinException('There are not information about coins', 500);
         }
 
-        let coinsSend = [];
-        for (let coin of coins) {
+        let coinsSend: CoinCollector[] = [];
+        coins.forEach(coin => {
             if (coin.program.toString() == idCollection) {
-                let coinSend = {
+                let coinSend: CoinCollector = {
                     _id: coin.id,
                     coinNumber: coin.coinNumber,
-                    program: coin.program,
+                    program: coin.program.toString(),
                     name: coin.name,
                     year: coin.year,
                     image: coin.image,
-                    description: coin.description,
                     found: false
                 }
                 if (collector.coins.indexOf(coin.id) != -1) {
@@ -47,8 +48,8 @@ export class CoinsCollectorService {
                 }
                 coinsSend.push(coinSend);
             }
-        }
-        return res.status(200).json(coinsSend);
+        });
+        return coinsSend;
 
     }
 
@@ -82,7 +83,7 @@ export class CoinsCollectorService {
         return res.status(200).json({ message: action });
     }
 
-    
+
 
 
 }

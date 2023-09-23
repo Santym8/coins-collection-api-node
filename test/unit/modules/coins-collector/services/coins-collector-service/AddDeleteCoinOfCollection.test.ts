@@ -1,7 +1,7 @@
 import { mock, instance, when, anything, anyString } from 'ts-mockito'
 import { Response } from 'express';
 import { IRequestWithUserId } from '../../../../../../src/config/jwt/IRequestWithUserId';
-import { fakeCoinsDB, fakeCoinsResponse, fakeUserCoinsDB } from '../FakeDB';
+
 //Dependency Injection
 import { CoinsCollectorService } from '../../../../../../src/modules/coins-collector/service/CoinsCollectorService';
 import { CoinRepository } from '../../../../../../src/modules/coin/repository/CoinRepository';
@@ -10,18 +10,16 @@ import { UserRepository } from '../../../../../../src/modules/user/repository/Us
 
 
 
-describe('CoinsCollectorService-GetCoinsOfCollector', () => {
+describe('CoinsCollectorService-AddDeleteCoinOfCollection', () => {
 
     test('The User does not exist', async () => {
 
         let mockedCoinRepository: CoinRepository = mock(CoinRepository);
-        let fakeCoins: any = {};
-        when(mockedCoinRepository.getAllCoins()).thenResolve(fakeCoins);
 
         let mocekdProgramRepository: ProgramRepository = mock(ProgramRepository);
+
         let mockUserRepository: UserRepository = mock(UserRepository);
         let fakeUser: any = null;
-
         when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
 
         let coinService: CoinsCollectorService = new CoinsCollectorService(
@@ -30,8 +28,8 @@ describe('CoinsCollectorService-GetCoinsOfCollector', () => {
         );
 
         let request: Partial<IRequestWithUserId> = {
-            query: {
-                idCollection: 'idCollection'
+            body: {
+                idCoin: 'idCoin'
             },
             userId: 'userId'
         };
@@ -40,22 +38,20 @@ describe('CoinsCollectorService-GetCoinsOfCollector', () => {
         };
         response['status'] = jest.fn().mockReturnValue(response);
 
-        await coinService.getAllCoinsWithFounded(request as IRequestWithUserId, response as Response);
+        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
         expect(response.status).toBeCalledWith(400);
         expect(response.json).toBeCalledWith({ message: 'The User does not exist' });
     });
 
-
-    test('No Coins', async () => {
+    test('The Coin does not exist', async () => {
 
         let mockedCoinRepository: CoinRepository = mock(CoinRepository);
-        let fakeCoins: any = [];
-        when(mockedCoinRepository.getAllCoins()).thenResolve(fakeCoins);
+        when(mockedCoinRepository.getCoinById(anyString())).thenResolve(null);
 
         let mocekdProgramRepository: ProgramRepository = mock(ProgramRepository);
+
         let mockUserRepository: UserRepository = mock(UserRepository);
         let fakeUser: any = {};
-
         when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
 
         let coinService: CoinsCollectorService = new CoinsCollectorService(
@@ -64,8 +60,8 @@ describe('CoinsCollectorService-GetCoinsOfCollector', () => {
         );
 
         let request: Partial<IRequestWithUserId> = {
-            query: {
-                idCollection: 'idCollection'
+            body: {
+                idCoin: 'idCoin'
             },
             userId: 'userId'
         };
@@ -74,26 +70,21 @@ describe('CoinsCollectorService-GetCoinsOfCollector', () => {
         };
         response['status'] = jest.fn().mockReturnValue(response);
 
-        await coinService.getAllCoinsWithFounded(request as IRequestWithUserId, response as Response);
+        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
         expect(response.status).toBeCalledWith(400);
-        expect(response.json).toBeCalledWith({ message: 'No coins' });
-
+        expect(response.json).toBeCalledWith({ message: 'The Coin does not exist' });
     });
 
-
-    test('GetCoinsOfCollector OK', async () => {
+    test('Coin added OK', async () => {
 
         let mockedCoinRepository: CoinRepository = mock(CoinRepository);
-        let fakeCoins: any = fakeCoinsDB;
-        when(mockedCoinRepository.getAllCoins()).thenResolve(fakeCoins);
+        let fakeCoin: any = {};
+        when(mockedCoinRepository.getCoinById(anyString())).thenResolve(fakeCoin);
 
         let mocekdProgramRepository: ProgramRepository = mock(ProgramRepository);
 
         let mockUserRepository: UserRepository = mock(UserRepository);
-        let fakeUser: any = {
-            coins: fakeUserCoinsDB
-        };
-
+        let fakeUser: any = { coins: ['621fcd41e23536204e045742', '621fcd41e23536204e045740'] };
         when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
 
         let coinService: CoinsCollectorService = new CoinsCollectorService(
@@ -102,8 +93,8 @@ describe('CoinsCollectorService-GetCoinsOfCollector', () => {
         );
 
         let request: Partial<IRequestWithUserId> = {
-            query: {
-                idCollection: '621ea811cee5982b1c89109e'
+            body: {
+                idCoin: 'idCoin'
             },
             userId: 'userId'
         };
@@ -112,10 +103,42 @@ describe('CoinsCollectorService-GetCoinsOfCollector', () => {
         };
         response['status'] = jest.fn().mockReturnValue(response);
 
-        await coinService.getAllCoinsWithFounded(request as IRequestWithUserId, response as Response);
+        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
         expect(response.status).toBeCalledWith(200);
-        expect(response.json).toBeCalledWith(fakeCoinsResponse);
+        expect(response.json).toBeCalledWith({ message: 'Added' });
     });
 
+    test('Coin removed OK', async () => {
+
+        let mockedCoinRepository: CoinRepository = mock(CoinRepository);
+        let fakeCoin: any = {};
+        when(mockedCoinRepository.getCoinById(anyString())).thenResolve(fakeCoin);
+
+        let mocekdProgramRepository: ProgramRepository = mock(ProgramRepository);
+
+        let mockUserRepository: UserRepository = mock(UserRepository);
+        let fakeUser: any = { coins: ['621fcd41e23536204e045742', '621fcd41e23536204e045740'] };
+        when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
+
+        let coinService: CoinsCollectorService = new CoinsCollectorService(
+            instance(mockedCoinRepository),
+            instance(mockUserRepository)
+        );
+
+        let request: Partial<IRequestWithUserId> = {
+            body: {
+                idCoin: '621fcd41e23536204e045742'
+            },
+            userId: 'userId'
+        };
+        let response: Partial<Response> = {
+            json: jest.fn()
+        };
+        response['status'] = jest.fn().mockReturnValue(response);
+
+        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
+        expect(response.status).toBeCalledWith(200);
+        expect(response.json).toBeCalledWith({ message: 'Removed' });
+    });
 
 });
