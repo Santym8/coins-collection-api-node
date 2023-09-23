@@ -7,13 +7,9 @@ import { Document } from 'mongoose';
 @Service()
 export class UserRepository {
 
-    public async createUser(dataNewUser: IUser): Promise<string | null> {
+    public async createUser(dataNewUser: IUser): Promise<string> {
         let newUser = new UserModel(dataNewUser);
         let savedUser = await newUser.save()
-            .catch((err: any) => {
-                return null;
-            });
-        if (!savedUser) return null;
         return savedUser.id;
     }
 
@@ -27,6 +23,11 @@ export class UserRepository {
 
     public async saveUserUpdated(user: Document<unknown, any, IUser>) {
         await user.save();
+    }
+
+    public async userExists(username: string): Promise<boolean> {
+        const user = await this.getUserByUsername(username);
+        return user ? true : false;
     }
 
 

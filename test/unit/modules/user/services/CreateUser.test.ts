@@ -12,13 +12,16 @@ import { UserException } from '../../../../../src/modules/user/exception/UserExc
 
 describe('User-Service-CreateUser', () => {
 
-    test('Invalid user information', async () => {
+    
+
+    test('The user already exists', async () => {
         //Given
         const mockedUserRepository: UserRepository = mock(UserRepository);
-        when(mockedUserRepository.createUser(anything())).thenResolve(null);
+        when(mockedUserRepository.userExists(anyString())).thenResolve(true);
 
         const mockedTokenManagement: TokenManagement = mock(TokenManagement);
         const mockeEncryptionManagement: EncryptionManagement = mock(EncryptionManagement);
+
         const userService: UserService = new UserService(
             instance(mockedUserRepository),
             instance(mockedTokenManagement),
@@ -26,14 +29,44 @@ describe('User-Service-CreateUser', () => {
         );
         
         const registerRequest = new RegisterRequest('name', 'password', 'email');
-        //When: Request has invalid user information
 
+        //When
         const result = () => userService.createUser(registerRequest);
 
-        //Then: Error
+        //Then
         expect(result).rejects.toThrow(UserException);
+        expect(result).rejects.toThrow('The user already exists');
 
     });
+
+    test('Error creating user', async () => {
+        //Given
+        const mockedUserRepository: UserRepository = mock(UserRepository);
+        when(mockedUserRepository.userExists(anyString())).thenResolve(false);
+        when(mockedUserRepository.createUser(anything())).thenReject(new Error('Error creating user'));
+
+        const mockedTokenManagement: TokenManagement = mock(TokenManagement);
+        const mockeEncryptionManagement: EncryptionManagement = mock(EncryptionManagement);
+
+        const userService: UserService = new UserService(
+            instance(mockedUserRepository),
+            instance(mockedTokenManagement),
+            instance(mockeEncryptionManagement)
+        );
+
+        const registerRequest = new RegisterRequest('name', 'password', 'email');
+
+        //When
+        const result = () => userService.createUser(registerRequest);
+
+        //Then
+        expect(result).rejects.toThrow(UserException);
+        expect(result).rejects.toThrow('Error creating user');
+
+    });
+
+   
+
     test('Ok', async () => {
         //Given
         let mockedUserRepository: UserRepository = mock(UserRepository);
