@@ -60,6 +60,10 @@ export class Server {
         this.app.use(Container.get(JwtMiddleware).verifyToken);
     }
 
+    private addErrorHandling() {
+        this.app.use(Container.get(ErrorHandling).getErrorHandling());
+    }
+
     private config() {
         dotenv.config();
         this.app.set('port', process.env.PORT || 3000);
@@ -71,8 +75,8 @@ export class Server {
 
         this.addMiddlewares();
         this.addRouters()
+        this.addErrorHandling();
 
-        this.app.use(Container.get(ErrorHandling).getErrorHandling());
     }
 
 
