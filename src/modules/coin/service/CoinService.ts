@@ -9,13 +9,8 @@ export class CoinService{
         private readonly coinRepository: CoinRepository
     ){}
 
-    public async getCoins(req: Request, res: Response){
-        try {
-            const programs = await this.coinRepository.getAllCoins();
-            res.status(200).json(programs);
-        } catch (error: any) {
-            res.status(400).json({message: error.message});
-        }
+    public async getCoins(){
+        return await this.coinRepository.getAllCoins();
     }
 
 }

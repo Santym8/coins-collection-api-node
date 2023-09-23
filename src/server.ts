@@ -21,6 +21,7 @@ import { PopulateDataBase } from './config/data-base/populate.data';
 import { ProgramController } from './modules/program/ProgramController';
 import { CoinController } from './modules/coin/CoinController';
 import { JwtMiddleware } from './config/jwt/JwtMiddleware';
+import { ErrorHandling } from './config/error-handling/ErrorHandling';
 
 
 
@@ -59,6 +60,10 @@ export class Server {
         this.app.use(Container.get(JwtMiddleware).verifyToken);
     }
 
+    private addErrorHandling() {
+        this.app.use(Container.get(ErrorHandling).getErrorHandling());
+    }
+
     private config() {
         dotenv.config();
         this.app.set('port', process.env.PORT || 3000);
@@ -70,6 +75,8 @@ export class Server {
 
         this.addMiddlewares();
         this.addRouters()
+        this.addErrorHandling();
+
     }
 
 

@@ -5,36 +5,68 @@ import { UserService } from '../../../../../src/modules/user/service/UserSevice'
 import { UserRepository } from '../../../../../src/modules/user/repository/UserRepository';
 import { TokenManagement } from '../../../../../src/config/jwt/TokenManagement';
 import { EncryptionManagement } from '../../../../../src/config/encryption/EncryptionManagement';
+import { RegisterRequest } from '../../../../../src/modules/user/dto/RegisterRequest';
+import { UserException } from '../../../../../src/modules/user/exception/UserException';
 
 
 
 describe('User-Service-CreateUser', () => {
 
-    test('Invalid user information', async () => {
-        //Given
-        let mockedUserRepository: UserRepository = mock(UserRepository);
-        when(mockedUserRepository.createUser(anything())).thenResolve(null);
+    
 
-        let mockedTokenManagement: TokenManagement = mock(TokenManagement);
-        let mockeEncryptionManagement: EncryptionManagement = mock(EncryptionManagement);
-        let userService: UserService = new UserService(
+    test('The user already exists', async () => {
+        //Given
+        const mockedUserRepository: UserRepository = mock(UserRepository);
+        when(mockedUserRepository.userExists(anyString())).thenResolve(true);
+
+        const mockedTokenManagement: TokenManagement = mock(TokenManagement);
+        const mockeEncryptionManagement: EncryptionManagement = mock(EncryptionManagement);
+
+        const userService: UserService = new UserService(
+            instance(mockedUserRepository),
+            instance(mockedTokenManagement),
+            instance(mockeEncryptionManagement)
+        );
+        
+        const registerRequest = new RegisterRequest('name', 'password', 'email');
+
+        //When
+        const result = () => userService.createUser(registerRequest);
+
+        //Then
+        expect(result).rejects.toThrow(UserException);
+        expect(result).rejects.toThrow('The user already exists');
+
+    });
+
+    test('Error creating user', async () => {
+        //Given
+        const mockedUserRepository: UserRepository = mock(UserRepository);
+        when(mockedUserRepository.userExists(anyString())).thenResolve(false);
+        when(mockedUserRepository.createUser(anything())).thenReject(new Error('Error creating user'));
+
+        const mockedTokenManagement: TokenManagement = mock(TokenManagement);
+        const mockeEncryptionManagement: EncryptionManagement = mock(EncryptionManagement);
+
+        const userService: UserService = new UserService(
             instance(mockedUserRepository),
             instance(mockedTokenManagement),
             instance(mockeEncryptionManagement)
         );
 
-        //When: Request has invalid user information
-        let request: Partial<Request> = {};
-        let response: Partial<Response> = {
-            json: jest.fn()
-        };
-        response['status'] = jest.fn().mockReturnValue(response);
+        const registerRequest = new RegisterRequest('name', 'password', 'email');
 
-        //Then: Error
-        await userService.createUser(request as Request, response as Response);
-        expect(response.status).toBeCalledWith(422);
+        //When
+        const result = () => userService.createUser(registerRequest);
+
+        //Then
+        expect(result).rejects.toThrow(UserException);
+        expect(result).rejects.toThrow('Error creating user');
 
     });
+
+   
+
     test('Ok', async () => {
         //Given
         let mockedUserRepository: UserRepository = mock(UserRepository);
@@ -50,16 +82,13 @@ describe('User-Service-CreateUser', () => {
             instance(mockeEncryptionManagement)
         );
 
-        //When: Request has no problem
-        let request: Partial<Request> = {};
-        let response: Partial<Response> = {
-            json: jest.fn()
-        };
-        response['status'] = jest.fn().mockReturnValue(response);
+        const registerRequest = new RegisterRequest('name', 'password', 'email');
+        //When: Request has invalid user information
+
+        const result = await userService.createUser(registerRequest);
 
         //Then: Ok
-        await userService.createUser(request as Request, response as Response);
-        expect(response.status).toBeCalledWith(200);
+        expect(result).toBe('valid Token');
 
     });
 

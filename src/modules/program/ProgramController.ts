@@ -19,7 +19,11 @@ export class ProgramController implements IController {
     private addRoutes() {
         this.router.get(
             '/',
-            (req: Request, res: Response) => this.programService.getPrograms(req, res));
+            (req: Request, res: Response, next: any) => {
+                this.programService.getPrograms()
+                    .then(programs => { res.status(200).json(programs); })
+                    .catch((err: Error) => next(err));
+            });
     }
 
     public getRouter(): Router {

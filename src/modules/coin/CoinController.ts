@@ -17,9 +17,12 @@ export class CoinController implements IController {
     }
 
     private addRoutes() {
-        this.router.get('/', async (req: Request, res: Response) => {
-            await this.coinService.getCoins(req, res);
-        });
+        this.router.get('/',
+            async (req: Request, res: Response, next: any) => {
+                this.coinService.getCoins()
+                    .then(coins => { res.status(200).json(coins); })
+                    .catch((err: Error) => next(err));
+            });
     }
 
     public getRouter(): Router {
