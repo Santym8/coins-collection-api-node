@@ -9,9 +9,9 @@ export class ProgramService{
         private readonly programRepository: ProgramRepository
     ){}
 
-    public async getPrograms(req: Request, res: Response) {
+    public async getPrograms() {
         const programs = await this.programRepository.getAllPrograms();
-        res.status(200).json(programs);
+        return programs;
     }
 
 }
