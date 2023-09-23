@@ -1,11 +1,7 @@
-export class CoinException extends Error {
-    private status: number;
-    constructor(message: string, status: number) {
-        super(message);
-        this.status = status;
-    }
+import { CustomError } from "../../../config/error-handling/CustomError";
 
-    public getStatus(): number {
-        return this.status;
+export class CoinException extends CustomError {
+    constructor(message: string, status: number) {
+        super(message, status);
     }
 }

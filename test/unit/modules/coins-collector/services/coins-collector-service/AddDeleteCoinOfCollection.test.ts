@@ -7,138 +7,151 @@ import { CoinsCollectorService } from '../../../../../../src/modules/coins-colle
 import { CoinRepository } from '../../../../../../src/modules/coin/repository/CoinRepository';
 import { ProgramRepository } from '../../../../../../src/modules/program/repository/ProgramRepository';
 import { UserRepository } from '../../../../../../src/modules/user/repository/UserRepository';
+import { UserException } from '../../../../../../src/modules/user/exception/UserException';
+import { CoinException } from '../../../../../../src/modules/coin/exception/CoinException';
 
 
 
 describe('CoinsCollectorService-AddDeleteCoinOfCollection', () => {
 
     test('The User does not exist', async () => {
+        // Given
+        const mockedCoinRepository = mock(CoinRepository);
 
-        let mockedCoinRepository: CoinRepository = mock(CoinRepository);
+        const mockedUserRepository = mock(UserRepository);
+        when(mockedUserRepository.getUserById(anyString())).thenResolve(null);
 
-        let mocekdProgramRepository: ProgramRepository = mock(ProgramRepository);
-
-        let mockUserRepository: UserRepository = mock(UserRepository);
-        let fakeUser: any = null;
-        when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
-
-        let coinService: CoinsCollectorService = new CoinsCollectorService(
+        const underTest = new CoinsCollectorService(
             instance(mockedCoinRepository),
-            instance(mockUserRepository)
+            instance(mockedUserRepository)
         );
 
-        let request: Partial<IRequestWithUserId> = {
-            body: {
-                idCoin: 'idCoin'
-            },
-            userId: 'userId'
-        };
-        let response: Partial<Response> = {
-            json: jest.fn()
-        };
-        response['status'] = jest.fn().mockReturnValue(response);
+        const idCollector = 'idCollector';
+        const idCoin = 'idCoin';
 
-        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
-        expect(response.status).toBeCalledWith(400);
-        expect(response.json).toBeCalledWith({ message: 'The User does not exist' });
+        // When
+        const result = () => underTest.addOrDeleteCoinOfCollector(idCollector, idCoin);
+
+        // Then
+        expect(result).rejects.toThrowError(UserException);
+        expect(result).rejects.toHaveProperty('statusCode', 400);
+        expect(result).rejects.toHaveProperty('message', 'The User does not exist');
+
     });
 
     test('The Coin does not exist', async () => {
-
-        let mockedCoinRepository: CoinRepository = mock(CoinRepository);
+        // Given
+        const mockedCoinRepository = mock(CoinRepository);
         when(mockedCoinRepository.getCoinById(anyString())).thenResolve(null);
 
-        let mocekdProgramRepository: ProgramRepository = mock(ProgramRepository);
+        const mockedUserRepository = mock(UserRepository);
+        when(mockedUserRepository.getUserById(anyString())).thenResolve({} as any);
 
-        let mockUserRepository: UserRepository = mock(UserRepository);
-        let fakeUser: any = {};
-        when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
-
-        let coinService: CoinsCollectorService = new CoinsCollectorService(
+        const underTest = new CoinsCollectorService(
             instance(mockedCoinRepository),
-            instance(mockUserRepository)
+            instance(mockedUserRepository)
         );
 
-        let request: Partial<IRequestWithUserId> = {
-            body: {
-                idCoin: 'idCoin'
-            },
-            userId: 'userId'
-        };
-        let response: Partial<Response> = {
-            json: jest.fn()
-        };
-        response['status'] = jest.fn().mockReturnValue(response);
+        const idCollector = 'idCollector';
+        const idCoin = 'idCoin';
 
-        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
-        expect(response.status).toBeCalledWith(400);
-        expect(response.json).toBeCalledWith({ message: 'The Coin does not exist' });
+        // When
+        const result = () => underTest.addOrDeleteCoinOfCollector(idCollector, idCoin);
+
+        // Then
+        expect(result).rejects.toThrowError(CoinException);
+        expect(result).rejects.toHaveProperty('statusCode', 400);
+        expect(result).rejects.toHaveProperty('message', 'The Coin does not exist');
+
     });
 
-    test('Coin added OK', async () => {
+    test('Error saving the user', async () => {
+        // Given
+        const idCollector = 'idCollector';
+        const idCoin = 'id_1';
+        const userCoins = ["id_1", "id_2"]
 
-        let mockedCoinRepository: CoinRepository = mock(CoinRepository);
-        let fakeCoin: any = {};
-        when(mockedCoinRepository.getCoinById(anyString())).thenResolve(fakeCoin);
+        const mockedCoinRepository = mock(CoinRepository);
+        when(mockedCoinRepository.getCoinById(anyString())).thenResolve({ id: idCoin } as any);
 
-        let mocekdProgramRepository: ProgramRepository = mock(ProgramRepository);
+        const mockedUserRepository = mock(UserRepository);
+        when(mockedUserRepository.getUserById(anyString())).thenResolve({ coins: userCoins } as any);
+        when(mockedUserRepository.saveUserUpdated(anything())).thenReject(new Error('Error saving the user'));
 
-        let mockUserRepository: UserRepository = mock(UserRepository);
-        let fakeUser: any = { coins: ['621fcd41e23536204e045742', '621fcd41e23536204e045740'] };
-        when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
-
-        let coinService: CoinsCollectorService = new CoinsCollectorService(
+        const underTest = new CoinsCollectorService(
             instance(mockedCoinRepository),
-            instance(mockUserRepository)
+            instance(mockedUserRepository)
         );
 
-        let request: Partial<IRequestWithUserId> = {
-            body: {
-                idCoin: 'idCoin'
-            },
-            userId: 'userId'
-        };
-        let response: Partial<Response> = {
-            json: jest.fn()
-        };
-        response['status'] = jest.fn().mockReturnValue(response);
+        // When
+        const result = () => underTest.addOrDeleteCoinOfCollector(idCollector, idCoin);
 
-        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
-        expect(response.status).toBeCalledWith(200);
-        expect(response.json).toBeCalledWith({ message: 'Added' });
+        // Then
+        expect(result).rejects.toThrowError(UserException);
+        expect(result).rejects.toHaveProperty('statusCode', 500);
+        expect(result).rejects.toHaveProperty('message', 'Error saving the user');
+
     });
 
-    test('Coin removed OK', async () => {
+    test("Coin removed from the collection", async () => {
+        // Given
 
-        let mockedCoinRepository: CoinRepository = mock(CoinRepository);
-        let fakeCoin: any = {};
-        when(mockedCoinRepository.getCoinById(anyString())).thenResolve(fakeCoin);
+        const idCollector = 'idCollector';
+        const idCoin = 'id_1';
+        const userCoins = ["id_1", "id_2"]
 
-        let mocekdProgramRepository: ProgramRepository = mock(ProgramRepository);
 
-        let mockUserRepository: UserRepository = mock(UserRepository);
-        let fakeUser: any = { coins: ['621fcd41e23536204e045742', '621fcd41e23536204e045740'] };
-        when(mockUserRepository.getUserById(anyString())).thenResolve(fakeUser);
+        const mockedCoinRepository = mock(CoinRepository);
+        when(mockedCoinRepository.getCoinById(anyString())).thenResolve({ id: idCoin } as any);
 
-        let coinService: CoinsCollectorService = new CoinsCollectorService(
+        const mockedUserRepository = mock(UserRepository);
+        when(mockedUserRepository.getUserById(anyString())).thenResolve({ coins: userCoins } as any);
+        when(mockedUserRepository.saveUserUpdated(anything())).thenResolve({} as any);
+
+        const underTest = new CoinsCollectorService(
             instance(mockedCoinRepository),
-            instance(mockUserRepository)
+            instance(mockedUserRepository)
         );
 
-        let request: Partial<IRequestWithUserId> = {
-            body: {
-                idCoin: '621fcd41e23536204e045742'
-            },
-            userId: 'userId'
-        };
-        let response: Partial<Response> = {
-            json: jest.fn()
-        };
-        response['status'] = jest.fn().mockReturnValue(response);
+        // When
+        const result = await underTest.addOrDeleteCoinOfCollector(idCollector, idCoin);
 
-        await coinService.addOrDeleteCoinOfCollector(request as IRequestWithUserId, response as Response);
-        expect(response.status).toBeCalledWith(200);
-        expect(response.json).toBeCalledWith({ message: 'Removed' });
+        // Then
+        expect(result.message).toBe("Removed");
+
     });
+
+    test("Coin added to the collection", async () => {
+        // Given
+
+        const idCollector = 'idCollector';
+        const idCoin = 'id_3';
+        const userCoins = ["id_1", "id_2"]
+
+
+        const mockedCoinRepository = mock(CoinRepository);
+        when(mockedCoinRepository.getCoinById(anyString())).thenResolve({ id: idCoin } as any);
+
+        const mockedUserRepository = mock(UserRepository);
+        when(mockedUserRepository.getUserById(anyString())).thenResolve({ coins: userCoins } as any);
+        when(mockedUserRepository.saveUserUpdated(anything())).thenResolve({} as any);
+
+        const underTest = new CoinsCollectorService(
+            instance(mockedCoinRepository),
+            instance(mockedUserRepository)
+        );
+
+        // When
+        const result = await underTest.addOrDeleteCoinOfCollector(idCollector, idCoin);
+
+        // Then
+        expect(result.message).toBe("Added");
+
+    });
+
+    
+       
+
+
 
 });

@@ -30,7 +30,13 @@ export class CoinsCollectorController implements IController {
 
         this.router.put(
             '/add_delete',
-            (req: Request, res: Response) => this.coinService.addOrDeleteCoinOfCollector(req, res));
+            (req: IRequestWithUserId, res: Response, next: any) => {
+                const idCollector = req.userId || '';
+                const idCoin = req.body.idCoin || '';
+                this.coinService.addOrDeleteCoinOfCollector(idCollector, idCoin)
+                    .then(result => res.status(200).json(result))
+                    .catch(err => next(err));
+            });
     }
 
     public getRouter(): Router {
