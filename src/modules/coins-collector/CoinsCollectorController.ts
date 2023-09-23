@@ -3,6 +3,7 @@ import { Router, Request, Response } from "express";
 import { CoinsCollectorService } from './service/CoinsCollectorService';
 
 import { IController } from '../../utils/interfaces/IController';
+import { IRequestWithUserId } from '../../config/jwt/IRequestWithUserId';
 
 @Service()
 export class CoinsCollectorController implements IController {
@@ -19,7 +20,13 @@ export class CoinsCollectorController implements IController {
     private addRoutes() {
         this.router.get(
             '/coins_of_collector',
-            (req: Request, res: Response) => this.coinService.getAllCoinsWithFounded(req, res));
+            (req: IRequestWithUserId, res: Response, next: any) => {
+                const idCollector = req.userId || '';
+                const idCollection = req.query.idCollection?.toString() || '';
+                this.coinService.getAllCoinsWithFounded(idCollector, idCollection)
+                    .then(coins => res.status(200).json(coins))
+                    .catch(err => next(err));
+            });
 
         this.router.put(
             '/add_delete',
