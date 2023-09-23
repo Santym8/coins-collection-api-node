@@ -25,10 +25,18 @@ export class UserService {
             email: registerRequest.getEmail(),
             coins: []
         };
-        const newUserId = await this.userRepository.createUser(user);
-        if (!newUserId) {
-            throw new UserException('The user could not be created', 500);
+
+        const userExist = await this.userRepository.userExists(user.username);
+        if (userExist) {
+            throw new UserException('The user already exists', 409);
         }
+
+        const newUserId = await this.userRepository.createUser(user)
+            .catch((err) => {
+                console.log(err);
+                throw new UserException("Error creating user", 500);
+            });
+       
         const token = this.tokenManagement.newToken(newUserId);
         return token;
     }
