@@ -1,3 +1,4 @@
+import { ValidationError } from "class-validator";
 import { CustomError } from "./CustomError";
 
 export class ErrorResponse {
@@ -6,13 +7,15 @@ export class ErrorResponse {
     private statusCode: number;
     private path: string;
     private date: Date;
+    private details: any;
 
-    constructor(error: string, message: string, statusCode: number, path: string, date: Date) {
+    constructor(error: string, message: string, statusCode: number, path: string, date: Date, details?: any) {
         this.error = error;
         this.message = message;
         this.statusCode = statusCode;
         this.path = path;
         this.date = date;
+        this.details = details;
     }
 
     public getError(): string {
@@ -61,5 +64,22 @@ export class ErrorResponse {
 
     public static fromCustomError(error: CustomError, path: string): ErrorResponse {
         return new ErrorResponse(error.constructor.name, error.message, error.getStatusCode(), path, new Date());
+    }
+
+    public static fromValidationError(errors: ValidationError[], path: string): ErrorResponse {
+        console.log(errors);
+        return new ErrorResponse(
+            "ValidationError",
+            "Invalid requests",
+            400, path,
+            new Date(),
+            errors.map((error: ValidationError) => {
+                return {
+                    field: error.property,
+                    value: error.value,
+                    constraints: error.constraints
+                }
+            })
+        );
     }
 }
