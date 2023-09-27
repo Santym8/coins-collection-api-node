@@ -24,7 +24,7 @@ export class JwtMiddleware {
             req.userId = id;
             next();
         } catch (error) {
-            return res.status(401).json({ message: 'Unuthorized' });
+            return res.status(401).json({ message: 'Unauthorized' });
         }
 
 
