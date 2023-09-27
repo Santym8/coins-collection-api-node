@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Service } from 'typedi';
 import { CustomError } from './CustomError';
 import { ErrorResponse } from './ErrorResponse';
+import { ValidationError } from 'class-validator';
 
 @Service()
 export class ErrorHandling {
@@ -14,6 +15,13 @@ export class ErrorHandling {
                     .status(err.getStatusCode())
                     .send(ErrorResponse.fromCustomError(err, req.path))
             }
+
+            if (err instanceof Array && err[0] instanceof ValidationError) {
+                return res
+                    .status(400)
+                    .send(ErrorResponse.fromValidationError(err, req.path))
+            }
+            
             return res.status(500).send(ErrorResponse.fromError(err, req.path));
         }
     }
