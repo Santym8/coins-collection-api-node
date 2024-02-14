@@ -32,7 +32,7 @@ describe('JwtMiddleware', () => {
         //Then: Unuthorized
         await underTest.verifyToken(request as Request, response as Response, nextFunction);
         expect(response.status).toBeCalledWith(401);
-        expect(response.json).toBeCalledWith({ message: 'Unuthorized' });
+        expect(response.json).toBeCalledWith({ message: 'Unauthorized' });
     });
 
     test('Empty access token', async () => {
