@@ -26,9 +26,14 @@ export class UserService {
             coins: []
         };
 
-        const userExist = await this.userRepository.userExists(user.username);
+        const userExist = await this.userRepository.getUserByUsername(user.username);
         if (userExist) {
             throw new UserException('The user already exists', 409);
+        }
+
+        const emailExist = await this.userRepository.getUserByEmail(user.email);
+        if (emailExist) {
+            throw new UserException('The email already exists', 409);
         }
 
         const newUserId = await this.userRepository.createUser(user)
@@ -36,7 +41,7 @@ export class UserService {
                 console.log(err);
                 throw new UserException("Error creating user", 500);
             });
-       
+
         const token = this.tokenManagement.newToken(newUserId);
         return token;
     }
