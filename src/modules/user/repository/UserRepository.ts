@@ -21,14 +21,12 @@ export class UserRepository {
         return await UserModel.findById(id);
     }
 
+    public async getUserByEmail(email: string) {
+        return await UserModel.findOne({ email: email });
+    }
+
     public async saveUserUpdated(user: Document<unknown, any, IUser>) {
         await user.save();
     }
-
-    public async userExists(username: string): Promise<boolean> {
-        const user = await this.getUserByUsername(username);
-        return user ? true : false;
-    }
-
 
 }
