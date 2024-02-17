@@ -13,4 +13,8 @@ export class ProgramRepository{
     public async saveProgram(program: IProgram){
         return await new ProgramModel(program).save();
     }
+
+    public async getProgramById(id: string){
+        return await ProgramModel.findById(id);
+    }
 }
