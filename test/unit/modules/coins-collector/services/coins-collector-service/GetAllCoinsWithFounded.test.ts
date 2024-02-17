@@ -36,34 +36,13 @@ describe('CoinsCollectorService-GetCoinsOfCollector', () => {
         expect(result).rejects.toThrowError('The User does not exist');
     });
 
-    test('There are not information about coins', async () => {
-        // Given
-        const mockedCoinRepository: CoinRepository = mock(CoinRepository);
-        const mockedUserRepository: UserRepository = mock(UserRepository);
-        when(mockedUserRepository.getUserById(anyString())).thenResolve({} as any);
-        when(mockedCoinRepository.getAllCoins()).thenResolve([]);
-        const underTest = new CoinsCollectorService(
-            instance(mockedCoinRepository),
-            instance(mockedUserRepository)
-        );
-
-        const idCollector = 'idCollector';
-        const idCollection = 'idCollection';
-        // When
-
-        const result = () => underTest.getAllCoinsWithFounded(idCollector, idCollection);
-
-        // Then
-        expect(result).rejects.toThrowError(CoinException);
-        expect(result).rejects.toThrowError('There are not information about coins');
-    });
 
     test('Get all coins of collector', async () => {
         // Given
         const mockedCoinRepository: CoinRepository = mock(CoinRepository);
         const mockedUserRepository: UserRepository = mock(UserRepository);
         when(mockedUserRepository.getUserById(anyString())).thenResolve({ coins: fakeUserCoinsDB } as any);
-        when(mockedCoinRepository.getAllCoins()).thenResolve(fakeCoinsDB);
+        when(mockedCoinRepository.getAllCoins(anyString())).thenResolve(fakeCoinsDB);
         const underTest = new CoinsCollectorService(
             instance(mockedCoinRepository),
             instance(mockedUserRepository)
