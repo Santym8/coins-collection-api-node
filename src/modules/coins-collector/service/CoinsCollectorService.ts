@@ -17,7 +17,7 @@ export class CoinsCollectorService {
     ) { }
 
 
-    public async getAllCoinsWithFounded(idCollector: string, idCollection: string): Promise<CoinCollector[]> {
+    public async getAllCoinsWithFounded(idCollector: string, idCollection?: string): Promise<CoinCollector[]> {
 
         if (!idCollector) {
             throw new UserException('The User does not exist', 400);
@@ -28,32 +28,23 @@ export class CoinsCollectorService {
             throw new UserException('The User does not exist', 400);
         }
 
-        // Todo: Filter by collection
-        if (!idCollection) {
-            throw new CoinException('The Collection does not exist', 400);
-        }
-        const coins = await this.coinRepository.getAllCoins();
-        if (!coins || coins.length == 0) {
-            throw new CoinException('There are not information about coins', 500);
-        }
+        const coins = await this.coinRepository.getAllCoins(idCollection);
 
         let coinsSend: CoinCollector[] = [];
         coins.forEach(coin => {
-            if (coin.program.toString() == idCollection) {
-                let coinSend: CoinCollector = {
-                    _id: coin.id,
-                    coinNumber: coin.coinNumber,
-                    program: coin.program.toString(),
-                    name: coin.name,
-                    year: coin.year,
-                    image: coin.image,
-                    found: false
-                }
-                if (collector.coins.indexOf(coin.id) != -1) {
-                    coinSend.found = true;
-                }
-                coinsSend.push(coinSend);
+            let coinSend: CoinCollector = {
+                _id: coin.id,
+                coinNumber: coin.coinNumber,
+                program: coin.program.toString(),
+                name: coin.name,
+                year: coin.year,
+                image: coin.image,
+                found: false
             }
+            if (collector.coins.indexOf(coin.id) != -1) {
+                coinSend.found = true;
+            }
+            coinsSend.push(coinSend);
         });
         return coinsSend;
 
