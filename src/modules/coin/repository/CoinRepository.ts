@@ -6,8 +6,10 @@ import { ICoin } from "../interface/ICoin";
 @Service()
 export class CoinRepository {
 
-    public async getAllCoins() {
-        return await CoinModel.find().sort('coinNumber');
+    public async getAllCoins(program?: string) {
+        if (!program) return await CoinModel.find();
+        return await CoinModel.find({ program: program })
+            .catch((err: Error) => { return [] });
     }
 
     public async getCoinById(id: string) {
