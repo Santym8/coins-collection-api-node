@@ -14,8 +14,6 @@ export class JwtMiddleware {
 
     public verifyToken = async (req: IRequestWithUserId, res: Response, next: any) => {
         try {
-            if(req.path === '/api/user/login' || req.path === '/api/user/register') return next();
-
             const token = req.headers['x-access-token'];
             if (!token) return res.status(401).json({ message: 'No token' });
             const id: string = this.encryptor.verifyToken(token as string);

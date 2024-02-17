@@ -17,8 +17,11 @@ export class CoinsCollectorService {
     ) { }
 
 
-    public async getAllCoinsWithFounded(idCollector: string, idCollection: string):
-        Promise<CoinCollector[]> {
+    public async getAllCoinsWithFounded(idCollector: string, idCollection: string): Promise<CoinCollector[]> {
+
+        if (!idCollector) {
+            throw new UserException('The User does not exist', 400);
+        }
 
         const collector = await this.userRepository.getUserById(idCollector);
         if (!collector) {
@@ -26,6 +29,9 @@ export class CoinsCollectorService {
         }
 
         // Todo: Filter by collection
+        if (!idCollection) {
+            throw new CoinException('The Collection does not exist', 400);
+        }
         const coins = await this.coinRepository.getAllCoins();
         if (!coins || coins.length == 0) {
             throw new CoinException('There are not information about coins', 500);

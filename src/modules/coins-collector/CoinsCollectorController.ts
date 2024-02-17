@@ -4,6 +4,7 @@ import { CoinsCollectorService } from './service/CoinsCollectorService';
 
 import { IController } from '../../utils/interfaces/IController';
 import { IRequestWithUserId } from '../../config/jwt/IRequestWithUserId';
+import { JwtMiddleware } from '../../config/jwt/JwtMiddleware';
 
 @Service()
 export class CoinsCollectorController implements IController {
@@ -12,6 +13,7 @@ export class CoinsCollectorController implements IController {
 
     constructor(
         private readonly coinService: CoinsCollectorService,
+        private readonly jwtMiddleware: JwtMiddleware
     ) {
         this.router = Router();
         this.addRoutes();
@@ -20,16 +22,19 @@ export class CoinsCollectorController implements IController {
     private addRoutes() {
         this.router.get(
             '/coins_of_collector',
+            this.jwtMiddleware.verifyToken,
             (req: IRequestWithUserId, res: Response, next: any) => {
                 const idCollector = req.userId || '';
                 const idCollection = req.query.idCollection?.toString() || '';
                 this.coinService.getAllCoinsWithFounded(idCollector, idCollection)
                     .then(coins => res.status(200).json(coins))
                     .catch(err => next(err));
-            });
+            }
+        );
 
         this.router.put(
             '/add_delete',
+            this.jwtMiddleware.verifyToken,
             (req: IRequestWithUserId, res: Response, next: any) => {
                 const idCollector = req.userId || '';
                 const idCoin = req.body.idCoin || '';
