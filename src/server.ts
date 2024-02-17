@@ -57,7 +57,6 @@ export class Server {
         this.app.use(express.json());
         this.app.use(compression());
         this.app.use(cors());
-        this.app.use(Container.get(JwtMiddleware).verifyToken);
     }
 
     private addErrorHandling() {
