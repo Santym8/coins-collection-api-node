@@ -25,7 +25,7 @@ export class CoinsCollectorController implements IController {
             this.jwtMiddleware.verifyToken,
             (req: IRequestWithUserId, res: Response, next: any) => {
                 const idCollector = req.userId || '';
-                const idCollection = req.query.idCollection?.toString() || '';
+                const idCollection = req.query.idCollection?.toString()
                 this.coinService.getAllCoinsWithFounded(idCollector, idCollection)
                     .then(coins => res.status(200).json(coins))
                     .catch(err => next(err));
