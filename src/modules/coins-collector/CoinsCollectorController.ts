@@ -21,7 +21,7 @@ export class CoinsCollectorController implements IController {
 
     private addRoutes() {
         this.router.get(
-            '/coins_of_collector',
+            '',
             this.jwtMiddleware.verifyToken,
             (req: IRequestWithUserId, res: Response, next: any) => {
                 const idCollector = req.userId || '';
@@ -33,7 +33,7 @@ export class CoinsCollectorController implements IController {
         );
 
         this.router.put(
-            '/add_delete',
+            '/add-delete',
             this.jwtMiddleware.verifyToken,
             (req: IRequestWithUserId, res: Response, next: any) => {
                 const idCollector = req.userId || '';
