@@ -1,123 +1,164 @@
-import { NextFunction, Request, Response } from 'express';
-import { mock, instance, when, anyString } from 'ts-mockito'
-import { JwtMiddleware } from '../../../../src/config/jwt/JwtMiddleware';
+import { NextFunction, Request, Response } from "express";
+import { mock, instance, when, anyString } from "ts-mockito";
+import { JwtMiddleware } from "../../../../src/config/jwt/JwtMiddleware";
 
 //Dependency Injection
-import { UserRepository } from '../../../../src/modules/user/repository/UserRepository';
-import { TokenManagement } from '../../../../src/config/jwt/TokenManagement';
-import { IRequestWithUserId } from '../../../../src/config/jwt/IRequestWithUserId';
+import { UserRepository } from "../../../../src/modules/user/repository/UserRepository";
+import { TokenManagement } from "../../../../src/config/jwt/TokenManagement";
+import { IRequestWithUserId } from "../../../../src/config/jwt/IRequestWithUserId";
 
+describe("JwtMiddleware", () => {
+  test("No access token", async () => {
+    //Given
+    let mockedUserRepository: UserRepository = mock(UserRepository);
+    let mockedEncryptor: TokenManagement = mock(TokenManagement);
+    const underTest: JwtMiddleware = new JwtMiddleware(
+      instance(mockedUserRepository),
+      instance(mockedEncryptor)
+    );
 
-describe('JwtMiddleware', () => {
+    //When: Request has no header x-access-token
+    let request: Partial<Request> = {};
+    let response: Partial<Response> = {
+      json: jest.fn(),
+    };
+    response["status"] = jest.fn().mockReturnValue(response);
 
-    test('No access token', async () => {
-        //Given
-        let mockedUserRepository: UserRepository = mock(UserRepository);
-        let mockedEncryptor: TokenManagement = mock(TokenManagement);
-        const underTest: JwtMiddleware = new JwtMiddleware(
-            instance(mockedUserRepository),
-            instance(mockedEncryptor)
-        );
-       
+    let nextFunction: NextFunction = jest.fn();
 
-        //When: Request has no header x-access-token
-        let request: Partial<Request> = {};
-        let response: Partial<Response> = {
-            json: jest.fn()
-        };
-        response['status'] = jest.fn().mockReturnValue(response);
+    //Then: Unuthorized
+    await underTest.verifyToken(
+      request as Request,
+      response as Response,
+      nextFunction
+    );
+    expect(response.status).toBeCalledWith(401);
+    expect(response.json).toBeCalledWith({ message: "Unauthorized" });
+  });
 
-        let nextFunction: NextFunction = jest.fn();
+  test("Empty access token", async () => {
+    //Given
+    let mockedUserRepository: UserRepository = mock(UserRepository);
+    let mockedEncryptor: TokenManagement = mock(TokenManagement);
+    const underTest: JwtMiddleware = new JwtMiddleware(
+      instance(mockedUserRepository),
+      instance(mockedEncryptor)
+    );
 
-        //Then: Unuthorized
-        await underTest.verifyToken(request as Request, response as Response, nextFunction);
-        expect(response.status).toBeCalledWith(401);
-        expect(response.json).toBeCalledWith({ message: 'Unauthorized' });
-    });
+    //When: Request has an empty x-access-token
+    let request: Partial<Request> = {
+      headers: { Authorization: "" },
+    };
+    let response: Partial<Response> = {
+      json: jest.fn(),
+    };
+    response["status"] = jest.fn().mockReturnValue(response);
 
-    test('Empty access token', async () => {
-        //Given
-        let mockedUserRepository: UserRepository = mock(UserRepository);
-        let mockedEncryptor: TokenManagement = mock(TokenManagement);
-        const underTest: JwtMiddleware = new JwtMiddleware(
-            instance(mockedUserRepository),
-            instance(mockedEncryptor)
-        );
-       
+    let nextFunction: NextFunction = jest.fn();
 
-        //When: Request has an empty x-access-token
-        let request: Partial<Request> = {
-            headers: { 'x-access-token': '' }
-        };
-        let response: Partial<Response> = {
-            json: jest.fn()
-        };
-        response['status'] = jest.fn().mockReturnValue(response);
+    //Then: No token
+    await underTest.verifyToken(
+      request as Request,
+      response as Response,
+      nextFunction
+    );
+    expect(response.status).toBeCalledWith(401);
+    expect(response.json).toBeCalledWith({ message: "No token" });
+  });
 
-        let nextFunction: NextFunction = jest.fn();
+  test("Bad 2 parts format token", async () => {
+    //Given
+    let mockedUserRepository: UserRepository = mock(UserRepository);
+    let mockedEncryptor: TokenManagement = mock(TokenManagement);
+    const underTest: JwtMiddleware = new JwtMiddleware(
+      instance(mockedUserRepository),
+      instance(mockedEncryptor)
+    );
 
-        //Then: No token
-        await underTest.verifyToken(request as Request, response as Response, nextFunction);
-        expect(response.status).toBeCalledWith(401);
-        expect(response.json).toBeCalledWith({ message: 'No token' });
-    });
+    //When: Request has an empty x-access-token
+    let request: Partial<Request> = {
+      headers: { Authorization: "ONE-PART-TOKEN" },
+    };
+    let response: Partial<Response> = {
+      json: jest.fn(),
+    };
+    response["status"] = jest.fn().mockReturnValue(response);
 
-    test('User does not exist', async () => {
-        //Given
-        let mockedEncryptor: TokenManagement = mock(TokenManagement);
-        when(mockedEncryptor.verifyToken(anyString())).thenReturn('valid_token');
+    let nextFunction: NextFunction = jest.fn();
 
-        let mockedUserRepository: UserRepository = mock(UserRepository);
-        when(mockedUserRepository.getUserById(anyString())).thenResolve(null);
+    //Then:
+    await underTest.verifyToken(
+      request as Request,
+      response as Response,
+      nextFunction
+    );
+    expect(response.status).toBeCalledWith(401);
+    expect(response.json).toBeCalledWith({ message: "No token" });
+  });
 
-        const underTest: JwtMiddleware = new JwtMiddleware(
-            instance(mockedUserRepository),
-            instance(mockedEncryptor)
-        );
+  test("User does not exist", async () => {
+    //Given
+    let mockedEncryptor: TokenManagement = mock(TokenManagement);
+    when(mockedEncryptor.verifyToken(anyString())).thenReturn("valid_token");
 
-        //When: Request has an empty x-access-token
-        let request: Partial<Request> = {
-            headers: { 'x-access-token': 'fsdf' }
-        };
-        let response: Partial<Response> = {
-            json: jest.fn()
-        };
-        response['status'] = jest.fn().mockReturnValue(response);
+    let mockedUserRepository: UserRepository = mock(UserRepository);
+    when(mockedUserRepository.getUserById(anyString())).thenResolve(null);
 
-        let nextFunction: NextFunction = jest.fn();
+    const underTest: JwtMiddleware = new JwtMiddleware(
+      instance(mockedUserRepository),
+      instance(mockedEncryptor)
+    );
 
-        //Then: No token
-        await underTest.verifyToken(request as Request, response as Response, nextFunction as NextFunction);
-        expect(response.status).toBeCalledWith(401);
-        expect(response.json).toBeCalledWith({ message: 'User does not exist' });
+    //When: Request has an empty x-access-token
+    let request: Partial<Request> = {
+      headers: { Authorization: "Bearer Token" },
+    };
+    let response: Partial<Response> = {
+      json: jest.fn(),
+    };
+    response["status"] = jest.fn().mockReturnValue(response);
 
-    });
+    let nextFunction: NextFunction = jest.fn();
 
-    test('Athorized', async () => {
-        //Given
-        let mockedUserRepository: UserRepository = mock(UserRepository);
-        when(mockedUserRepository.getUserById(anyString())).thenResolve({} as any);
+    //Then: No token
+    await underTest.verifyToken(
+      request as Request,
+      response as Response,
+      nextFunction as NextFunction
+    );
+    expect(response.status).toBeCalledWith(401);
+    expect(response.json).toBeCalledWith({ message: "User does not exist" });
+  });
 
-        let mockedEncryptor: TokenManagement = mock(TokenManagement);
-        when(mockedEncryptor.verifyToken(anyString())).thenReturn('valid id');
+  test("Athorized", async () => {
+    //Given
+    let mockedUserRepository: UserRepository = mock(UserRepository);
+    when(mockedUserRepository.getUserById(anyString())).thenResolve({} as any);
 
-        const underTest: JwtMiddleware = new JwtMiddleware(
-            instance(mockedUserRepository),
-            instance(mockedEncryptor)
-        );
+    let mockedEncryptor: TokenManagement = mock(TokenManagement);
+    when(mockedEncryptor.verifyToken(anyString())).thenReturn("valid id");
 
-        //When: Request has good token
-        let request: Partial<Request> = {
-            headers: { 'x-access-token': 'good_token' }
-        };
-        let response: Partial<Response> = {
-            json: jest.fn()
-        };
-        response['status'] = jest.fn().mockReturnValue(response);
+    const underTest: JwtMiddleware = new JwtMiddleware(
+      instance(mockedUserRepository),
+      instance(mockedEncryptor)
+    );
 
-        let nextFunction: NextFunction = jest.fn();
-        //Then: User does not exist
-        await underTest.verifyToken(request as IRequestWithUserId, response as Response, nextFunction);
-        expect(nextFunction).toBeCalledTimes(1);
-    });
+    //When: Request has good token
+    let request: Partial<Request> = {
+      headers: { Authorization: "Bearer Token" },
+    };
+    let response: Partial<Response> = {
+      json: jest.fn(),
+    };
+    response["status"] = jest.fn().mockReturnValue(response);
+
+    let nextFunction: NextFunction = jest.fn();
+    //Then: User does not exist
+    await underTest.verifyToken(
+      request as IRequestWithUserId,
+      response as Response,
+      nextFunction
+    );
+    expect(nextFunction).toBeCalledTimes(1);
+  });
 });
