@@ -17,7 +17,7 @@ export class CoinsCollectorService {
     ) { }
 
 
-    public async getAllCoinsWithFounded(idCollector: string, idCollection?: string): Promise<CoinCollector[]> {
+    public async getAllCoinsWithFounded(idCollector: string, idProgram?: string): Promise<CoinCollector[]> {
 
         if (!idCollector) {
             throw new UserException('The User does not exist', 400);
@@ -28,7 +28,7 @@ export class CoinsCollectorService {
             throw new UserException('The User does not exist', 400);
         }
 
-        const coins = await this.coinRepository.getAllCoins(idCollection);
+        const coins = await this.coinRepository.getAllCoins(idProgram);
 
         let coinsSend: CoinCollector[] = [];
         coins.forEach(coin => {
