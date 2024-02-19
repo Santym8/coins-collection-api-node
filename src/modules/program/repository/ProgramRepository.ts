@@ -7,7 +7,7 @@ import { IProgram } from "../interface/IProgram";
 export class ProgramRepository{
 
     public async getAllPrograms(){
-        return await ProgramModel.find();
+        return await ProgramModel.find().sort("name");
     }
 
     public async saveProgram(program: IProgram){
