@@ -47,7 +47,7 @@ describe("JwtMiddleware", () => {
 
     //When: Request has an empty x-access-token
     let request: Partial<Request> = {
-      headers: { Authorization: "" },
+      headers: { authorization: "" },
     };
     let response: Partial<Response> = {
       json: jest.fn(),
@@ -77,7 +77,7 @@ describe("JwtMiddleware", () => {
 
     //When: Request has an empty x-access-token
     let request: Partial<Request> = {
-      headers: { Authorization: "ONE-PART-TOKEN" },
+      headers: { authorization: "ONE-PART-TOKEN" },
     };
     let response: Partial<Response> = {
       json: jest.fn(),
@@ -111,7 +111,7 @@ describe("JwtMiddleware", () => {
 
     //When: Request has an empty x-access-token
     let request: Partial<Request> = {
-      headers: { Authorization: "Bearer Token" },
+      headers: { authorization: "Bearer Token" },
     };
     let response: Partial<Response> = {
       json: jest.fn(),
@@ -145,7 +145,7 @@ describe("JwtMiddleware", () => {
 
     //When: Request has good token
     let request: Partial<Request> = {
-      headers: { Authorization: "Bearer Token" },
+      headers: { authorization: "Bearer Token" },
     };
     let response: Partial<Response> = {
       json: jest.fn(),
