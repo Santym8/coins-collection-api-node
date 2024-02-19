@@ -17,7 +17,7 @@ export class JwtMiddleware {
     next: any
   ) => {
     try {
-      const token = req.headers["Authorization"]?.toString().split(" ")[1];
+      const token = req.headers["authorization"]?.toString().split(" ")[1];
       if (!token) return res.status(401).json({ message: "No token" });
       const id: string = this.encryptor.verifyToken(token as string);
       const user = await this.userRepository.getUserById(id);
