@@ -7,7 +7,7 @@ import { ICoin } from "../interface/ICoin";
 export class CoinRepository {
 
     public async getAllCoins(program?: string) {
-        if (!program) return await CoinModel.find().sort({ program: 1, coinNumber: 1});
+        if (!program) return await CoinModel.find().sort({ year: 1, coinNumber: 1});
         return await CoinModel.find({ program: program })
             .catch((err: Error) => { return [] });
     }
