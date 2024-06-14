@@ -2,7 +2,7 @@
 
 Coins Collection is a backend project developed using Express and TypeScript. This project leverages various technologies and design patterns to ensure robustness, maintainability, and scalability.
 
-- This project is currently available in render [Render](https://coins-collection-api.onrender.com)
+- This project is currently available in [Render](https://coins-collection-api.onrender.com)
 - The web client can be found at [coins-collection-web](https://github.com/Santym8/coins-collection-web.git)
 - The mobile client can be found at [coins_collection_app](https://github.com/Santym8/coins_collection_app.git)
 
